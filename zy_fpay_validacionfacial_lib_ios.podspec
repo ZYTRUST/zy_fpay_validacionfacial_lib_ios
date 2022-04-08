@@ -27,7 +27,6 @@ Pod::Spec.new do |s|
     s.ios.deployment_target  = '11.0'
 
     s.dependency 'zy_lib_idemia_face_ios', '~> 2.0.3'
-    s.dependency 'Alamofire', '~>4.8.2'
     s.dependency 'JWTDecode', '~> 2.6'
     s.dependency 'CryptoSwift', '~> 1.3.3'
     s.dependency 'lottie-ios', '~> 3.3.0'
