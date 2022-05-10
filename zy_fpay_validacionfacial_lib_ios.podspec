@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
 
     s.name         = "zy_fpay_validacionfacial_lib_ios"
-    s.version      = "0.3.1"
+    s.version      = "0.3.2"
     s.summary      = "A brief description of zy_fpay_validacionfacial_lib_ios project."
     s.description  = <<-DESC
     An extended description of zy_fpay_validacionfacial_lib_ios project.
@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
     s.license          = { :type => 'MIT', :file => 'LICENSE' }
 
     s.author = { "$(git config user.name)" => "$(git config user.email)" }
-    s.source = { :git => "https://github.com/ZYTRUST/zy_fpay_validacionfacial_lib_ios.git", :tag => "0.3.1" }
+    s.source = { :git => "https://github.com/ZYTRUST/zy_fpay_validacionfacial_lib_ios.git", :tag => "0.3.2" }
     s.public_header_files = "zy_fpay_validacionfacial_lib_ios.framework/Headers/*.h"
     s.source_files = "zy_fpay_validacionfacial_lib_ios.framework/Headers/*.h"
     s.vendored_frameworks = "zy_fpay_validacionfacial_lib_ios.framework"
@@ -27,7 +27,7 @@ Pod::Spec.new do |s|
     s.ios.deployment_target  = '11.0'
 
     s.dependency 'zy_lib_idemia_face_ios', '~> 2.0.3'
-    s.dependency 'zy-lib-become-ocr-ios', '~> 1.1.3'
+    s.dependency 'zy-lib-become-ocr-ios', '~> 1.1.4'
     s.dependency 'JWTDecode', '~> 2.6'
     s.dependency 'CryptoSwift', '~> 1.3.3'
     s.dependency 'lottie-ios', '~> 3.3.0'
