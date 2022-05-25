@@ -357,7 +357,6 @@ SWIFT_CLASS_NAMED("ZyApiCross")
 SWIFT_CLASS("_TtC32zy_fpay_validacionfacial_lib_ios11ZyReactComp")
 @interface ZyReactComp : NSObject
 - (nonnull instancetype)initOnView:(UIViewController * _Nonnull)onView OBJC_DESIGNATED_INITIALIZER;
-- (void)reactValidacionFacial:(ReactRequest * _Nonnull)reactRequest completion:(void (^ _Nonnull)(ReactResponse * _Nonnull))completion;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
