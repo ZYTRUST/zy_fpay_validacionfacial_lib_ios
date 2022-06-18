@@ -10,7 +10,6 @@
 #endif
 #endif
 
-#import "CryptoSwift.h"
 
 FOUNDATION_EXPORT double zy_fpay_validacionfacial_lib_iosVersionNumber;
 FOUNDATION_EXPORT const unsigned char zy_fpay_validacionfacial_lib_iosVersionString[];
