@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
 
     s.name         = "zy_fpay_validacionfacial_lib_ios"
-    s.version      = "0.8.1"
+    s.version      = "0.8.2"
     s.summary      = "A brief description of zy_fpay_validacionfacial_lib_ios project."
     s.description  = <<-DESC
     An extended description of zy_fpay_validacionfacial_lib_ios project.
@@ -33,6 +33,7 @@ Pod::Spec.new do |s|
     s.dependency 'CryptoSwift', '1.3.3'
     s.dependency 'lottie-ios', '3.3.0'
     s.dependency 'zy_lib_ui_ios', '~>  0.2.3'
+    s.dependency 'zy_encrypt_util', '~> 0.1.1'
 
 
 
