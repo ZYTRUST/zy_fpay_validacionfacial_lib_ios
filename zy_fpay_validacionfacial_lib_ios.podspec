@@ -33,9 +33,6 @@ Pod::Spec.new do |s|
     s.dependency 'CryptoSwift', '1.3.3'
     s.dependency 'lottie-ios', '3.3.0'
     s.dependency 'zy_lib_ui_ios', '~>  0.2.3'
-    s.dependency 'zy_encrypt_util', '~> 0.1.1'
-
-
 
 
 end
