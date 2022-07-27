@@ -27,7 +27,7 @@ Pod::Spec.new do |s|
     s.ios.deployment_target  = '12.0'
 
     s.dependency 'zy_lib_idemia_face_ios', '~> 6.0.2'
-    s.dependency 'zy_lib_become_ocr_ios', '~> 7.0.8'
+    s.dependency 'zy_lib_become_ocr_ios', '~> 7.0.9'
     
     s.dependency 'JWTDecode', '2.6'
     s.dependency 'CryptoSwift', '1.3.3'
