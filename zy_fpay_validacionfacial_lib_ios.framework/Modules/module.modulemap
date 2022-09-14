@@ -6,6 +6,6 @@ framework module zy_fpay_validacionfacial_lib_ios {
 }
 
 module zy_fpay_validacionfacial_lib_ios.Swift {
-  header "zy_fpay_validacionfacial_lib_ios-Swift.h"
-  requires objc
+    header "zy_fpay_validacionfacial_lib_ios-Swift.h"
+    requires objc
 }
