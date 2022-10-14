@@ -1,6 +1,7 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.6.1 (swiftlang-5.6.0.323.66 clang-1316.0.20.12)
+// swift-compiler-version: Apple Swift version 5.7 (swiftlang-5.7.0.127.4 clang-1400.0.29.50)
 // swift-module-flags: -target arm64-apple-ios12.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name zy_fpay_validacionfacial_lib_ios
+// swift-module-flags-ignorable: -enable-bare-slash-regex
 import Combine
 import CoreVideo
 import CryptoSwift
@@ -12,6 +13,7 @@ import Swift
 import SystemConfiguration
 import UIKit
 import _Concurrency
+import _StringProcessing
 @_exported import zy_fpay_validacionfacial_lib_ios
 import zy_lib_become_ocr_ios
 import zy_lib_idemia_face_ios
@@ -293,7 +295,7 @@ public struct DataResponsePublisher<Value> : Combine.Publisher {
   public init<Serializer>(_ request: zy_fpay_validacionfacial_lib_ios.DataRequest, queue: Dispatch.DispatchQueue, serializer: Serializer) where Value == Serializer.SerializedObject, Serializer : zy_fpay_validacionfacial_lib_ios.DataResponseSerializerProtocol
   public func result() -> Combine.AnyPublisher<Swift.Result<Value, zy_fpay_validacionfacial_lib_ios.AFError>, Swift.Never>
   public func value() -> Combine.AnyPublisher<Value, zy_fpay_validacionfacial_lib_ios.AFError>
-  public func receive<S>(subscriber: S) where S : Combine.Subscriber, S.Failure == zy_fpay_validacionfacial_lib_ios.DataResponsePublisher<Value>.Failure, S.Input == zy_fpay_validacionfacial_lib_ios.DataResponsePublisher<Value>.Output
+  public func receive<S>(subscriber: S) where S : Combine.Subscriber, S.Failure == Swift.Never, S.Input == zy_fpay_validacionfacial_lib_ios.DataResponse<Value, zy_fpay_validacionfacial_lib_ios.AFError>
 }
 @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
 extension zy_fpay_validacionfacial_lib_ios.DataResponsePublisher where Value == Foundation.Data? {
@@ -322,7 +324,7 @@ public struct DataStreamPublisher<Value> : Combine.Publisher {
   public init<Serializer>(_ request: zy_fpay_validacionfacial_lib_ios.DataStreamRequest, queue: Dispatch.DispatchQueue, serializer: Serializer) where Value == Serializer.SerializedObject, Serializer : zy_fpay_validacionfacial_lib_ios.DataStreamSerializer
   public func result() -> Combine.AnyPublisher<Swift.Result<Value, zy_fpay_validacionfacial_lib_ios.AFError>, Swift.Never>
   public func value() -> Combine.AnyPublisher<Value, zy_fpay_validacionfacial_lib_ios.AFError>
-  public func receive<S>(subscriber: S) where S : Combine.Subscriber, S.Failure == zy_fpay_validacionfacial_lib_ios.DataStreamPublisher<Value>.Failure, S.Input == zy_fpay_validacionfacial_lib_ios.DataStreamPublisher<Value>.Output
+  public func receive<S>(subscriber: S) where S : Combine.Subscriber, S.Failure == Swift.Never, S.Input == zy_fpay_validacionfacial_lib_ios.DataStreamRequest.Stream<Value, zy_fpay_validacionfacial_lib_ios.AFError>
 }
 extension zy_fpay_validacionfacial_lib_ios.DataStreamRequest {
   @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
@@ -343,7 +345,7 @@ public struct DownloadResponsePublisher<Value> : Combine.Publisher {
   public init<Serializer>(_ request: zy_fpay_validacionfacial_lib_ios.DownloadRequest, queue: Dispatch.DispatchQueue, serializer: Serializer) where Value == Serializer.SerializedObject, Serializer : zy_fpay_validacionfacial_lib_ios.DownloadResponseSerializerProtocol
   public func result() -> Combine.AnyPublisher<Swift.Result<Value, zy_fpay_validacionfacial_lib_ios.AFError>, Swift.Never>
   public func value() -> Combine.AnyPublisher<Value, zy_fpay_validacionfacial_lib_ios.AFError>
-  public func receive<S>(subscriber: S) where S : Combine.Subscriber, S.Failure == zy_fpay_validacionfacial_lib_ios.DownloadResponsePublisher<Value>.Failure, S.Input == zy_fpay_validacionfacial_lib_ios.DownloadResponsePublisher<Value>.Output
+  public func receive<S>(subscriber: S) where S : Combine.Subscriber, S.Failure == Swift.Never, S.Input == zy_fpay_validacionfacial_lib_ios.DownloadResponse<Value, zy_fpay_validacionfacial_lib_ios.AFError>
 }
 extension zy_fpay_validacionfacial_lib_ios.DownloadRequest {
   @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
@@ -373,55 +375,39 @@ extension zy_fpay_validacionfacial_lib_ios.DownloadRequest {
 }
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
 extension zy_fpay_validacionfacial_lib_ios.Request {
-  
   #if compiler(>=5.3) && $RethrowsProtocol
   public func uploadProgress(bufferingPolicy: zy_fpay_validacionfacial_lib_ios.StreamOf<Foundation.Progress>.BufferingPolicy = .unbounded) -> zy_fpay_validacionfacial_lib_ios.StreamOf<Foundation.Progress>
   #endif
-
-  
   #if compiler(>=5.3) && $RethrowsProtocol
   public func downloadProgress(bufferingPolicy: zy_fpay_validacionfacial_lib_ios.StreamOf<Foundation.Progress>.BufferingPolicy = .unbounded) -> zy_fpay_validacionfacial_lib_ios.StreamOf<Foundation.Progress>
   #endif
-
-  
   #if compiler(>=5.3) && $RethrowsProtocol
   public func urlRequests(bufferingPolicy: zy_fpay_validacionfacial_lib_ios.StreamOf<Foundation.URLRequest>.BufferingPolicy = .unbounded) -> zy_fpay_validacionfacial_lib_ios.StreamOf<Foundation.URLRequest>
   #endif
-
-  
   #if compiler(>=5.3) && $RethrowsProtocol
   public func urlSessionTasks(bufferingPolicy: zy_fpay_validacionfacial_lib_ios.StreamOf<Foundation.URLSessionTask>.BufferingPolicy = .unbounded) -> zy_fpay_validacionfacial_lib_ios.StreamOf<Foundation.URLSessionTask>
   #endif
-
-  
   #if compiler(>=5.3) && $RethrowsProtocol
   public func cURLDescriptions(bufferingPolicy: zy_fpay_validacionfacial_lib_ios.StreamOf<Swift.String>.BufferingPolicy = .unbounded) -> zy_fpay_validacionfacial_lib_ios.StreamOf<Swift.String>
   #endif
-
 }
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
 public struct DataTask<Value> {
-  
   #if compiler(>=5.3) && $EffectfulProp
   public var response: zy_fpay_validacionfacial_lib_ios.DataResponse<Value, zy_fpay_validacionfacial_lib_ios.AFError> {
     get async
   }
   #endif
-
-  
   #if compiler(>=5.3) && $EffectfulProp
   public var result: Swift.Result<Value, zy_fpay_validacionfacial_lib_ios.AFError> {
     get async
   }
   #endif
-
-  
   #if compiler(>=5.3) && $EffectfulProp
   public var value: Value {
     get async throws
   }
   #endif
-
   public func cancel()
   public func resume()
   public func suspend()
@@ -436,27 +422,21 @@ extension zy_fpay_validacionfacial_lib_ios.DataRequest {
 }
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
 public struct DownloadTask<Value> {
-  
   #if compiler(>=5.3) && $EffectfulProp
   public var response: zy_fpay_validacionfacial_lib_ios.DownloadResponse<Value, zy_fpay_validacionfacial_lib_ios.AFError> {
     get async
   }
   #endif
-
-  
   #if compiler(>=5.3) && $EffectfulProp
   public var result: Swift.Result<Value, zy_fpay_validacionfacial_lib_ios.AFError> {
     get async
   }
   #endif
-
-  
   #if compiler(>=5.3) && $EffectfulProp
   public var value: Value {
     get async throws
   }
   #endif
-
   public func cancel()
   public func resume()
   public func suspend()
@@ -472,31 +452,21 @@ extension zy_fpay_validacionfacial_lib_ios.DownloadRequest {
 }
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
 public struct DataStreamTask {
-  
   #if compiler(>=5.3) && $RethrowsProtocol
   public typealias Stream<Success, Failure> = zy_fpay_validacionfacial_lib_ios.StreamOf<zy_fpay_validacionfacial_lib_ios.DataStreamRequest.Stream<Success, Failure>> where Failure : Swift.Error
   #endif
-
-  
   #if compiler(>=5.3) && $RethrowsProtocol
   public func streamingData(automaticallyCancelling shouldAutomaticallyCancel: Swift.Bool = true, bufferingPolicy: zy_fpay_validacionfacial_lib_ios.DataStreamTask.Stream<Foundation.Data, Swift.Never>.BufferingPolicy = .unbounded) -> zy_fpay_validacionfacial_lib_ios.DataStreamTask.Stream<Foundation.Data, Swift.Never>
   #endif
-
-  
   #if compiler(>=5.3) && $RethrowsProtocol
   public func streamingStrings(automaticallyCancelling shouldAutomaticallyCancel: Swift.Bool = true, bufferingPolicy: zy_fpay_validacionfacial_lib_ios.DataStreamTask.Stream<Swift.String, Swift.Never>.BufferingPolicy = .unbounded) -> zy_fpay_validacionfacial_lib_ios.DataStreamTask.Stream<Swift.String, Swift.Never>
   #endif
-
-  
   #if compiler(>=5.3) && $RethrowsProtocol
   public func streamingDecodables<T>(_ type: T.Type = T.self, automaticallyCancelling shouldAutomaticallyCancel: Swift.Bool = true, bufferingPolicy: zy_fpay_validacionfacial_lib_ios.DataStreamTask.Stream<T, zy_fpay_validacionfacial_lib_ios.AFError>.BufferingPolicy = .unbounded) -> zy_fpay_validacionfacial_lib_ios.DataStreamTask.Stream<T, zy_fpay_validacionfacial_lib_ios.AFError> where T : Swift.Decodable
   #endif
-
-  
   #if compiler(>=5.3) && $RethrowsProtocol
   public func streamingResponses<Serializer>(serializedUsing serializer: Serializer, automaticallyCancelling shouldAutomaticallyCancel: Swift.Bool = true, bufferingPolicy: zy_fpay_validacionfacial_lib_ios.DataStreamTask.Stream<Serializer.SerializedObject, zy_fpay_validacionfacial_lib_ios.AFError>.BufferingPolicy = .unbounded) -> zy_fpay_validacionfacial_lib_ios.DataStreamTask.Stream<Serializer.SerializedObject, zy_fpay_validacionfacial_lib_ios.AFError> where Serializer : zy_fpay_validacionfacial_lib_ios.DataStreamSerializer
   #endif
-
   public func cancel()
   public func resume()
   public func suspend()
@@ -505,7 +475,6 @@ public struct DataStreamTask {
 extension zy_fpay_validacionfacial_lib_ios.DataStreamRequest {
   final public func streamTask() -> zy_fpay_validacionfacial_lib_ios.DataStreamTask
 }
-
 #if compiler(>=5.3) && $RethrowsProtocol
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
 public struct StreamOf<Element> : _Concurrency.AsyncSequence {
@@ -513,15 +482,12 @@ public struct StreamOf<Element> : _Concurrency.AsyncSequence {
   public typealias BufferingPolicy = _Concurrency.AsyncStream<Element>.Continuation.BufferingPolicy
   public func makeAsyncIterator() -> zy_fpay_validacionfacial_lib_ios.StreamOf<Element>.Iterator
   public struct Iterator : _Concurrency.AsyncIteratorProtocol {
-    
     #if compiler(>=5.3) && $AsyncAwait
     public mutating func next() async -> Element?
     #endif
-
   }
 }
 #endif
-
 public enum ZyTApiErrorEnum : Swift.Int {
   case EXITO
   case ERROR_VALIDATION
@@ -538,6 +504,7 @@ public enum ZyTApiErrorEnum : Swift.Int {
   }
 }
 public func tipoDocToDni(tipoDocInput: Swift.String) -> Swift.String
+public func versionLibreria() -> Swift.String
 public protocol EventMonitor {
   var queue: Dispatch.DispatchQueue { get }
   func urlSession(_ session: Foundation.URLSession, didBecomeInvalidWithError error: Swift.Error?)
@@ -765,6 +732,9 @@ open class ClosureEventMonitor : zy_fpay_validacionfacial_lib_ios.EventMonitor {
   open func request(_ request: zy_fpay_validacionfacial_lib_ios.DownloadRequest, didValidateRequest urlRequest: Foundation.URLRequest?, response: Foundation.HTTPURLResponse, fileURL: Foundation.URL?, withResult result: zy_fpay_validacionfacial_lib_ios.Request.ValidationResult)
   open func request(_ request: zy_fpay_validacionfacial_lib_ios.DownloadRequest, didParseResponse response: zy_fpay_validacionfacial_lib_ios.DownloadResponse<Foundation.URL?, zy_fpay_validacionfacial_lib_ios.AFError>)
   @objc deinit
+}
+extension UIKit.UIColor {
+  convenience public init?(hex: Swift.String)
 }
 public struct HTTPHeaders {
   public init()
@@ -1921,7 +1891,7 @@ extension zy_fpay_validacionfacial_lib_ios.AlamofireExtension where ExtendedType
 extension Swift.Int32 : zy_fpay_validacionfacial_lib_ios.AlamofireExtended {
   public typealias ExtendedType = Swift.Int32
 }
-extension zy_fpay_validacionfacial_lib_ios.AlamofireExtension where ExtendedType == Darwin.OSStatus {
+extension zy_fpay_validacionfacial_lib_ios.AlamofireExtension where ExtendedType == Swift.Int32 {
   public var isSuccess: Swift.Bool {
     get
   }
@@ -2013,7 +1983,7 @@ extension zy_fpay_validacionfacial_lib_ios.SessionDelegate : Foundation.URLSessi
   @objc dynamic open func urlSession(_ session: Foundation.URLSession, downloadTask: Foundation.URLSessionDownloadTask, didFinishDownloadingTo location: Foundation.URL)
 }
 public enum Model : Swift.String {
-  case simulator, iPod1, iPod2, iPod3, iPod4, iPod5, iPad2, iPad3, iPad4, iPadAir, iPadAir2, iPadAir3, iPad5, iPad6, iPad7, iPadMini, iPadMini2, iPadMini3, iPadMini4, iPadMini5, iPadPro9_7, iPadPro10_5, iPadPro11, iPadPro12_9, iPadPro2_12_9, iPadPro3_12_9, iPhone4, iPhone4S, iPhone5, iPhone5S, iPhone5C, iPhone6, iPhone6Plus, iPhone6S, iPhone6SPlus, iPhoneSE, iPhone7, iPhone7Plus, iPhone8, iPhone8Plus, iPhoneX, iPhoneXS, iPhoneXSMax, iPhoneXR, iPhone11, iPhone11Pro, iPhone11ProMax, iPhoneSE2, AppleTV, AppleTV_4K, unrecognized
+  case simulator, iPod1, iPod2, iPod3, iPod4, iPod5, iPod6, iPod7, iPad2, iPad3, iPad4, iPadAir, iPadAir2, iPadAir3, iPadAir4, iPadAir5, iPad5, iPad6, iPad7, iPad8, iPad9, iPadMini, iPadMini2, iPadMini3, iPadMini4, iPadMini5, iPadMini6, iPadPro9_7, iPadPro10_5, iPadPro11, iPadPro2_11, iPadPro3_11, iPadPro12_9, iPadPro2_12_9, iPadPro3_12_9, iPadPro4_12_9, iPadPro5_12_9, iPhone4, iPhone4S, iPhone5, iPhone5S, iPhone5C, iPhone6, iPhone6Plus, iPhone6S, iPhone6SPlus, iPhoneSE, iPhone7, iPhone7Plus, iPhone8, iPhone8Plus, iPhoneX, iPhoneXS, iPhoneXSMax, iPhoneXR, iPhone11, iPhone11Pro, iPhone11ProMax, iPhoneSE2, iPhone12Mini, iPhone12, iPhone12Pro, iPhone12ProMax, iPhone13Mini, iPhone13, iPhone13Pro, iPhone13ProMax, iPhoneSE3, iPhone14, iPhone14Plus, iPhone14Pro, iPhone14ProMax, iPhoneSE4, AppleWatch1, AppleWatchS1, AppleWatchS2, AppleWatchS3, AppleWatchS4, AppleWatchS5, AppleWatchSE, AppleWatchS6, AppleWatchS7, AppleWatchSEGPS40, AppleWatchSEGPS44, AppleWatchSEGPSCELL40, AppleWatchSEGPSCELL44, AppleWatchS8GPS40, AppleWatchS8GPS44, AppleWatchS8GPSCELL40, AppleWatchS8GPSCELL44, AppleWatchUltra, AppleTV, AppleTV1, AppleTV2, AppleTV3, AppleTV4, AppleTV_4K, AppleTV2_4K, unrecognized
   public init?(rawValue: Swift.String)
   public typealias RawValue = Swift.String
   public var rawValue: Swift.String {
@@ -2170,6 +2140,12 @@ extension zy_fpay_validacionfacial_lib_ios.DownloadRequest {
   @objc public init(onView: UIKit.UIViewController)
   public func login(ruc: Swift.String, user: Swift.String, pass: Swift.String, completion: @escaping zy_fpay_validacionfacial_lib_ios.ZyApiCross.CallbackLogin)
   public func iniciarFlujo(request: zy_fpay_validacionfacial_lib_ios.ZyCrossRequest, completion: @escaping zy_fpay_validacionfacial_lib_ios.ZyApiCross.CallbackResponse)
+  @objc deinit
+}
+public class ZyLoadingApiUI {
+  public typealias CallbackLoadingUI = (zy_fpay_validacionfacial_lib_ios.ZyUILoadingResult<Swift.Bool, Swift.Bool>) -> Swift.Void
+  public init(onView: UIKit.UIViewController)
+  public func showConfirm(request: zy_fpay_validacionfacial_lib_ios.ZyUILoadingRequest, completion: @escaping zy_fpay_validacionfacial_lib_ios.ZyLoadingApiUI.CallbackLoadingUI)
   @objc deinit
 }
 public enum ZyLibResult<T, E> {
@@ -2542,6 +2518,15 @@ public enum ZyErrorUi : Swift.Int {
     get
   }
 }
+public struct ZyUILoadingRequest {
+  public init()
+  public var message: Swift.String?
+  public var animated: Swift.Bool
+}
+public enum ZyUILoadingResult<T, C> {
+  case ok(T)
+  case cancel(C)
+}
 @objc @objcMembers public class ZyReactComp : ObjectiveC.NSObject {
   @objc public init(onView: UIKit.UIViewController)
   @objc deinit
@@ -2609,6 +2594,12 @@ public enum ZyErrorUi : Swift.Int {
   @objc public var rsValidacionDatosbioDeErrorVB: Swift.String?
   @objc public var rsValidacionDatosbioScore: Swift.String?
   @objc override dynamic public init()
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class ZyUILoadingView : UIKit.UIViewController {
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func viewDidLoad()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
   @objc deinit
 }
 extension zy_fpay_validacionfacial_lib_ios.AuthenticationError : Swift.Equatable {}
