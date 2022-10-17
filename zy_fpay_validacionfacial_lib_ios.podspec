@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
 
     s.name         = "zy_fpay_validacionfacial_lib_ios"
-    s.version      = "0.9.10"
+    s.version      = "0.10.0"
     s.summary      = "A brief description of zy_fpay_validacionfacial_lib_ios project."
     s.description  = <<-DESC
     An extended description of zy_fpay_validacionfacial_lib_ios project.
@@ -21,16 +21,16 @@ Pod::Spec.new do |s|
     s.source = { :git => "https://github.com/ZYTRUST/zy_fpay_validacionfacial_lib_ios.git", :tag => s.version.to_s }
     s.public_header_files = "zy_fpay_validacionfacial_lib_ios.framework/Headers/*.h"
     s.source_files = "zy_fpay_validacionfacial_lib_ios.framework/Headers/*.h"
-    #s.vendored_frameworks = "zy_fpay_validacionfacial_lib_ios.framework"
+    s.vendored_frameworks = "zy_fpay_validacionfacial_lib_ios.framework"
     s.platform = :ios
     #s.swift_version = "4.2"
     s.ios.deployment_target  = '12.0'
 
     s.static_framework = true
     #s.resources = 'Assets/*.{lproj,storyboard,xcassets,png}'
-    s.resources = 'zy_fpay_validacionfacial_lib_ios/Assets/*.{lproj,storyboard,xcassets,png}'
+    #s.resources = 'zy_fpay_validacionfacial_lib_ios/Assets/*.{lproj,storyboard,xcassets,png}'
 
-    s.source_files = 'zy_fpay_validacionfacial_lib_ios/Classes/**/*'
+    #s.source_files = 'zy_fpay_validacionfacial_lib_ios/Classes/**/*'
 
     s.dependency 'zy_lib_idemia_face_ios', '~> 6.3.0'
     s.dependency 'zy_lib_become_ocr_ios', '~> 7.1.5'
@@ -39,6 +39,7 @@ Pod::Spec.new do |s|
     s.dependency 'CryptoSwift', '1.3.3'
     s.dependency 'lottie-ios', '3.3.0'
     s.dependency 'zy_lib_ui_ios', '~>  0.2.5'
+    s.dependency 'ZyUICargando', '~> 0.1.3'
 
 
 end
