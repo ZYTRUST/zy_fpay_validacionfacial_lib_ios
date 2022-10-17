@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
 
     s.name         = "zy_fpay_validacionfacial_lib_ios"
-    s.version      = "0.9.9.3"
+    s.version      = "0.9.10"
     s.summary      = "A brief description of zy_fpay_validacionfacial_lib_ios project."
     s.description  = <<-DESC
     An extended description of zy_fpay_validacionfacial_lib_ios project.
@@ -30,6 +30,7 @@ Pod::Spec.new do |s|
     #s.resources = 'Assets/*.{lproj,storyboard,xcassets,png}'
     s.resources = 'zy_fpay_validacionfacial_lib_ios/Assets/*.{lproj,storyboard,xcassets,png}'
 
+    s.source_files = 'zy_fpay_validacionfacial_lib_ios/Classes/**/*'
 
     s.dependency 'zy_lib_idemia_face_ios', '~> 6.3.0'
     s.dependency 'zy_lib_become_ocr_ios', '~> 7.1.5'
