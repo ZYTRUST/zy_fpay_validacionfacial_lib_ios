@@ -1,5 +1,5 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.7 (swiftlang-5.7.0.127.4 clang-1400.0.29.50)
+// swift-compiler-version: Apple Swift version 5.7.1 (swiftlang-5.7.1.135.3 clang-1400.0.29.51)
 // swift-module-flags: -target x86_64-apple-ios12.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name zy_fpay_validacionfacial_lib_ios
 // swift-module-flags-ignorable: -enable-bare-slash-regex
 import Combine
@@ -2263,9 +2263,39 @@ public struct BfResponseDto : Swift.Codable {
   public var nuIntentos: Swift.String
   public var nuIntentosCaptura: Swift.String
   public var facialImageSearch: zy_fpay_validacionfacial_lib_ios.FacialImageSearch?
+  public var addressReniec: zy_fpay_validacionfacial_lib_ios.AddressReniec?
   public enum CodingKeys : Swift.String, Swift.CodingKey {
     case bioCodError, bioDeError, bioCodErrorReniec, bioDeErrorReniec, bioTiDoc, bioNuDoc, bioPreNom, bioApPat, bioApMat, bioScore, idTxn, nuSolicitud, nuIntentos
     case facialImageSearch
+    case addressReniec
+    public init?(rawValue: Swift.String)
+    public init?(stringValue: Swift.String)
+    public init?(intValue: Swift.Int)
+    public typealias RawValue = Swift.String
+    public var intValue: Swift.Int? {
+      get
+    }
+    public var rawValue: Swift.String {
+      get
+    }
+    public var stringValue: Swift.String {
+      get
+    }
+  }
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct AddressReniec : Swift.Codable {
+  public var bioCountry: Swift.String
+  public var bioDepartment: Swift.String
+  public var bioProvince: Swift.String
+  public var bioDistric: Swift.String
+  public var bioPrefixAddress: Swift.String
+  public var bioAddress: Swift.String
+  public var bioUrb: Swift.String
+  public var bioPrefixUrbCondResid: Swift.String
+  public enum CodingKeys : Swift.String, Swift.CodingKey {
+    case bioCountry, bioDepartment, bioProvince, bioDistric, bioPrefixAddress, bioAddress, bioUrb, bioPrefixUrbCondResid
     public init?(rawValue: Swift.String)
     public init?(stringValue: Swift.String)
     public init?(intValue: Swift.Int)
@@ -2635,6 +2665,9 @@ extension zy_fpay_validacionfacial_lib_ios.ZyCrossResponse.CodingKeys : Swift.Ra
 extension zy_fpay_validacionfacial_lib_ios.BfResponseDto.CodingKeys : Swift.Equatable {}
 extension zy_fpay_validacionfacial_lib_ios.BfResponseDto.CodingKeys : Swift.Hashable {}
 extension zy_fpay_validacionfacial_lib_ios.BfResponseDto.CodingKeys : Swift.RawRepresentable {}
+extension zy_fpay_validacionfacial_lib_ios.AddressReniec.CodingKeys : Swift.Equatable {}
+extension zy_fpay_validacionfacial_lib_ios.AddressReniec.CodingKeys : Swift.Hashable {}
+extension zy_fpay_validacionfacial_lib_ios.AddressReniec.CodingKeys : Swift.RawRepresentable {}
 extension zy_fpay_validacionfacial_lib_ios.FacialImageSearch.CodingKeys : Swift.Equatable {}
 extension zy_fpay_validacionfacial_lib_ios.FacialImageSearch.CodingKeys : Swift.Hashable {}
 extension zy_fpay_validacionfacial_lib_ios.FacialImageSearch.CodingKeys : Swift.RawRepresentable {}
