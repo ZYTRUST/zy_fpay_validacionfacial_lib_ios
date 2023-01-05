@@ -2264,6 +2264,8 @@ public struct BfResponseDto : Swift.Codable {
   public var nuSolicitud: Swift.String
   public var nuIntentos: Swift.String
   public var nuIntentosCaptura: Swift.String
+  public var bioRnecEstadoCedula: Swift.String
+  public var bioRnecDescripcionEstado: Swift.String
   public var facialImageSearch: zy_fpay_validacionfacial_lib_ios.FacialImageSearch?
   public var addressReniec: zy_fpay_validacionfacial_lib_ios.AddressReniec?
   public enum CodingKeys : Swift.String, Swift.CodingKey {
