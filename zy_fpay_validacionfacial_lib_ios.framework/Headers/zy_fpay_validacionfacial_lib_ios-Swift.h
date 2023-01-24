@@ -410,6 +410,7 @@ SWIFT_CLASS("_TtC32zy_fpay_validacionfacial_lib_ios11ZyReactComp")
 SWIFT_CLASS("_TtC32zy_fpay_validacionfacial_lib_ios15ZyUILoadingView")
 @interface ZyUILoadingView : UIViewController
 - (void)viewDidLoad;
+@property (nonatomic, readonly) UIInterfaceOrientationMask supportedInterfaceOrientations;
 - (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
