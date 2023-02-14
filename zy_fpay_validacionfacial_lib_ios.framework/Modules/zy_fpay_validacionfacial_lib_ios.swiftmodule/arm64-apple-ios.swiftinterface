@@ -8,6 +8,7 @@ import CryptoSwift
 import Dispatch
 import Foundation
 import JWTDecode
+import Microblink
 import MobileCoreServices
 import Swift
 import SystemConfiguration
