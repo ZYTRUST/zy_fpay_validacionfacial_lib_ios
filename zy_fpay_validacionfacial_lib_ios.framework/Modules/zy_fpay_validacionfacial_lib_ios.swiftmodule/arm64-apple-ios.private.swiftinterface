@@ -1,0 +1,2710 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.7.2 (swiftlang-5.7.2.135.5 clang-1400.0.29.51)
+// swift-module-flags: -target arm64-apple-ios12.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -Onone -module-name zy_fpay_validacionfacial_lib_ios
+// swift-module-flags-ignorable: -enable-bare-slash-regex
+import Combine
+import CoreVideo
+import CryptoSwift
+import Dispatch
+import Foundation
+import JWTDecode
+import MobileCoreServices
+import Swift
+import SystemConfiguration
+import UIKit
+import _Concurrency
+import _StringProcessing
+@_exported import zy_fpay_validacionfacial_lib_ios
+import zy_lib_become_ocr_ios
+import zy_lib_idemia_face_ios
+import zy_lib_ui_ios
+public enum AFError : Swift.Error {
+  public enum MultipartEncodingFailureReason {
+    case bodyPartURLInvalid(url: Foundation.URL)
+    case bodyPartFilenameInvalid(in: Foundation.URL)
+    case bodyPartFileNotReachable(at: Foundation.URL)
+    case bodyPartFileNotReachableWithError(atURL: Foundation.URL, error: Swift.Error)
+    case bodyPartFileIsDirectory(at: Foundation.URL)
+    case bodyPartFileSizeNotAvailable(at: Foundation.URL)
+    case bodyPartFileSizeQueryFailedWithError(forURL: Foundation.URL, error: Swift.Error)
+    case bodyPartInputStreamCreationFailed(for: Foundation.URL)
+    case outputStreamCreationFailed(for: Foundation.URL)
+    case outputStreamFileAlreadyExists(at: Foundation.URL)
+    case outputStreamURLInvalid(url: Foundation.URL)
+    case outputStreamWriteFailed(error: Swift.Error)
+    case inputStreamReadFailed(error: Swift.Error)
+  }
+  public struct UnexpectedInputStreamLength : Swift.Error {
+    public var bytesExpected: Swift.UInt64
+    public var bytesRead: Swift.UInt64
+  }
+  public enum ParameterEncodingFailureReason {
+    case missingURL
+    case jsonEncodingFailed(error: Swift.Error)
+    case customEncodingFailed(error: Swift.Error)
+  }
+  public enum ParameterEncoderFailureReason {
+    public enum RequiredComponent {
+      case url
+      case httpMethod(rawValue: Swift.String)
+    }
+    case missingRequiredComponent(zy_fpay_validacionfacial_lib_ios.AFError.ParameterEncoderFailureReason.RequiredComponent)
+    case encoderFailed(error: Swift.Error)
+  }
+  public enum ResponseValidationFailureReason {
+    case dataFileNil
+    case dataFileReadFailed(at: Foundation.URL)
+    case missingContentType(acceptableContentTypes: [Swift.String])
+    case unacceptableContentType(acceptableContentTypes: [Swift.String], responseContentType: Swift.String)
+    case unacceptableStatusCode(code: Swift.Int)
+    case customValidationFailed(error: Swift.Error)
+  }
+  public enum ResponseSerializationFailureReason {
+    case inputDataNilOrZeroLength
+    case inputFileNil
+    case inputFileReadFailed(at: Foundation.URL)
+    case stringSerializationFailed(encoding: Swift.String.Encoding)
+    case jsonSerializationFailed(error: Swift.Error)
+    case decodingFailed(error: Swift.Error)
+    case customSerializationFailed(error: Swift.Error)
+    case invalidEmptyResponse(type: Swift.String)
+  }
+  public enum ServerTrustFailureReason {
+    public struct Output {
+      public let host: Swift.String
+      public let trust: Security.SecTrust
+      public let status: Darwin.OSStatus
+      public let result: Security.SecTrustResultType
+    }
+    case noRequiredEvaluator(host: Swift.String)
+    case noCertificatesFound
+    case noPublicKeysFound
+    case policyApplicationFailed(trust: Security.SecTrust, policy: Security.SecPolicy, status: Darwin.OSStatus)
+    case settingAnchorCertificatesFailed(status: Darwin.OSStatus, certificates: [Security.SecCertificate])
+    case revocationPolicyCreationFailed
+    case trustEvaluationFailed(error: Swift.Error?)
+    case defaultEvaluationFailed(output: zy_fpay_validacionfacial_lib_ios.AFError.ServerTrustFailureReason.Output)
+    case hostValidationFailed(output: zy_fpay_validacionfacial_lib_ios.AFError.ServerTrustFailureReason.Output)
+    case revocationCheckFailed(output: zy_fpay_validacionfacial_lib_ios.AFError.ServerTrustFailureReason.Output, options: zy_fpay_validacionfacial_lib_ios.RevocationTrustEvaluator.Options)
+    case certificatePinningFailed(host: Swift.String, trust: Security.SecTrust, pinnedCertificates: [Security.SecCertificate], serverCertificates: [Security.SecCertificate])
+    case publicKeyPinningFailed(host: Swift.String, trust: Security.SecTrust, pinnedKeys: [Security.SecKey], serverKeys: [Security.SecKey])
+    case customEvaluationFailed(error: Swift.Error)
+  }
+  public enum URLRequestValidationFailureReason {
+    case bodyDataInGETRequest(Foundation.Data)
+  }
+  case createUploadableFailed(error: Swift.Error)
+  case createURLRequestFailed(error: Swift.Error)
+  case downloadedFileMoveFailed(error: Swift.Error, source: Foundation.URL, destination: Foundation.URL)
+  case explicitlyCancelled
+  case invalidURL(url: zy_fpay_validacionfacial_lib_ios.URLConvertible)
+  case multipartEncodingFailed(reason: zy_fpay_validacionfacial_lib_ios.AFError.MultipartEncodingFailureReason)
+  case parameterEncodingFailed(reason: zy_fpay_validacionfacial_lib_ios.AFError.ParameterEncodingFailureReason)
+  case parameterEncoderFailed(reason: zy_fpay_validacionfacial_lib_ios.AFError.ParameterEncoderFailureReason)
+  case requestAdaptationFailed(error: Swift.Error)
+  case requestRetryFailed(retryError: Swift.Error, originalError: Swift.Error)
+  case responseValidationFailed(reason: zy_fpay_validacionfacial_lib_ios.AFError.ResponseValidationFailureReason)
+  case responseSerializationFailed(reason: zy_fpay_validacionfacial_lib_ios.AFError.ResponseSerializationFailureReason)
+  case serverTrustEvaluationFailed(reason: zy_fpay_validacionfacial_lib_ios.AFError.ServerTrustFailureReason)
+  case sessionDeinitialized
+  case sessionInvalidated(error: Swift.Error?)
+  case sessionTaskFailed(error: Swift.Error)
+  case urlRequestValidationFailed(reason: zy_fpay_validacionfacial_lib_ios.AFError.URLRequestValidationFailureReason)
+}
+extension Swift.Error {
+  public var asAFError: zy_fpay_validacionfacial_lib_ios.AFError? {
+    get
+  }
+  public func asAFError(orFailWith message: @autoclosure () -> Swift.String, file: Swift.StaticString = #file, line: Swift.UInt = #line) -> zy_fpay_validacionfacial_lib_ios.AFError
+}
+extension zy_fpay_validacionfacial_lib_ios.AFError {
+  public var isSessionDeinitializedError: Swift.Bool {
+    get
+  }
+  public var isSessionInvalidatedError: Swift.Bool {
+    get
+  }
+  public var isExplicitlyCancelledError: Swift.Bool {
+    get
+  }
+  public var isInvalidURLError: Swift.Bool {
+    get
+  }
+  public var isParameterEncodingError: Swift.Bool {
+    get
+  }
+  public var isParameterEncoderError: Swift.Bool {
+    get
+  }
+  public var isMultipartEncodingError: Swift.Bool {
+    get
+  }
+  public var isRequestAdaptationError: Swift.Bool {
+    get
+  }
+  public var isResponseValidationError: Swift.Bool {
+    get
+  }
+  public var isResponseSerializationError: Swift.Bool {
+    get
+  }
+  public var isServerTrustEvaluationError: Swift.Bool {
+    get
+  }
+  public var isRequestRetryError: Swift.Bool {
+    get
+  }
+  public var isCreateUploadableError: Swift.Bool {
+    get
+  }
+  public var isCreateURLRequestError: Swift.Bool {
+    get
+  }
+  public var isDownloadedFileMoveError: Swift.Bool {
+    get
+  }
+  public var isSessionTaskError: Swift.Bool {
+    get
+  }
+}
+extension zy_fpay_validacionfacial_lib_ios.AFError {
+  public var urlConvertible: zy_fpay_validacionfacial_lib_ios.URLConvertible? {
+    get
+  }
+  public var url: Foundation.URL? {
+    get
+  }
+  public var underlyingError: Swift.Error? {
+    get
+  }
+  public var acceptableContentTypes: [Swift.String]? {
+    get
+  }
+  public var responseContentType: Swift.String? {
+    get
+  }
+  public var responseCode: Swift.Int? {
+    get
+  }
+  public var failedStringEncoding: Swift.String.Encoding? {
+    get
+  }
+  public var sourceURL: Foundation.URL? {
+    get
+  }
+  public var destinationURL: Foundation.URL? {
+    get
+  }
+  public var downloadResumeData: Foundation.Data? {
+    get
+  }
+}
+extension zy_fpay_validacionfacial_lib_ios.AFError : Foundation.LocalizedError {
+  public var errorDescription: Swift.String? {
+    get
+  }
+}
+public let AF: zy_fpay_validacionfacial_lib_ios.Session
+public struct AlamofireExtension<ExtendedType> {
+  public var type: ExtendedType {
+    get
+  }
+  public init(_ type: ExtendedType)
+}
+public protocol AlamofireExtended {
+  associatedtype ExtendedType
+  static var af: zy_fpay_validacionfacial_lib_ios.AlamofireExtension<Self.ExtendedType>.Type { get set }
+  var af: zy_fpay_validacionfacial_lib_ios.AlamofireExtension<Self.ExtendedType> { get set }
+}
+extension zy_fpay_validacionfacial_lib_ios.AlamofireExtended {
+  public static var af: zy_fpay_validacionfacial_lib_ios.AlamofireExtension<Self>.Type {
+    get
+    set
+  }
+  public var af: zy_fpay_validacionfacial_lib_ios.AlamofireExtension<Self> {
+    get
+    set
+  }
+}
+public protocol AuthenticationCredential {
+  var requiresRefresh: Swift.Bool { get }
+}
+public protocol Authenticator : AnyObject {
+  associatedtype Credential : zy_fpay_validacionfacial_lib_ios.AuthenticationCredential
+  func apply(_ credential: Self.Credential, to urlRequest: inout Foundation.URLRequest)
+  func refresh(_ credential: Self.Credential, for session: zy_fpay_validacionfacial_lib_ios.Session, completion: @escaping (Swift.Result<Self.Credential, Swift.Error>) -> Swift.Void)
+  func didRequest(_ urlRequest: Foundation.URLRequest, with response: Foundation.HTTPURLResponse, failDueToAuthenticationError error: Swift.Error) -> Swift.Bool
+  func isRequest(_ urlRequest: Foundation.URLRequest, authenticatedWith credential: Self.Credential) -> Swift.Bool
+}
+public enum AuthenticationError : Swift.Error {
+  case missingCredential
+  case excessiveRefresh
+  public static func == (a: zy_fpay_validacionfacial_lib_ios.AuthenticationError, b: zy_fpay_validacionfacial_lib_ios.AuthenticationError) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public class AuthenticationInterceptor<AuthenticatorType> : zy_fpay_validacionfacial_lib_ios.RequestInterceptor where AuthenticatorType : zy_fpay_validacionfacial_lib_ios.Authenticator {
+  public typealias Credential = AuthenticatorType.Credential
+  public struct RefreshWindow {
+    public let interval: Foundation.TimeInterval
+    public let maximumAttempts: Swift.Int
+    public init(interval: Foundation.TimeInterval = 30.0, maximumAttempts: Swift.Int = 5)
+  }
+  public var credential: zy_fpay_validacionfacial_lib_ios.AuthenticationInterceptor<AuthenticatorType>.Credential? {
+    get
+    set
+  }
+  public init(authenticator: AuthenticatorType, credential: zy_fpay_validacionfacial_lib_ios.AuthenticationInterceptor<AuthenticatorType>.Credential? = nil, refreshWindow: zy_fpay_validacionfacial_lib_ios.AuthenticationInterceptor<AuthenticatorType>.RefreshWindow? = RefreshWindow())
+  public func adapt(_ urlRequest: Foundation.URLRequest, for session: zy_fpay_validacionfacial_lib_ios.Session, completion: @escaping (Swift.Result<Foundation.URLRequest, Swift.Error>) -> Swift.Void)
+  public func retry(_ request: zy_fpay_validacionfacial_lib_ios.Request, for session: zy_fpay_validacionfacial_lib_ios.Session, dueTo error: Swift.Error, completion: @escaping (zy_fpay_validacionfacial_lib_ios.RetryResult) -> Swift.Void)
+  @objc deinit
+}
+public protocol CachedResponseHandler {
+  func dataTask(_ task: Foundation.URLSessionDataTask, willCacheResponse response: Foundation.CachedURLResponse, completion: @escaping (Foundation.CachedURLResponse?) -> Swift.Void)
+}
+public struct ResponseCacher {
+  public enum Behavior {
+    case cache
+    case doNotCache
+    case modify((Foundation.URLSessionDataTask, Foundation.CachedURLResponse) -> Foundation.CachedURLResponse?)
+  }
+  public static let cache: zy_fpay_validacionfacial_lib_ios.ResponseCacher
+  public static let doNotCache: zy_fpay_validacionfacial_lib_ios.ResponseCacher
+  public let behavior: zy_fpay_validacionfacial_lib_ios.ResponseCacher.Behavior
+  public init(behavior: zy_fpay_validacionfacial_lib_ios.ResponseCacher.Behavior)
+}
+extension zy_fpay_validacionfacial_lib_ios.ResponseCacher : zy_fpay_validacionfacial_lib_ios.CachedResponseHandler {
+  public func dataTask(_ task: Foundation.URLSessionDataTask, willCacheResponse response: Foundation.CachedURLResponse, completion: @escaping (Foundation.CachedURLResponse?) -> Swift.Void)
+}
+extension zy_fpay_validacionfacial_lib_ios.CachedResponseHandler where Self == zy_fpay_validacionfacial_lib_ios.ResponseCacher {
+  public static var cache: zy_fpay_validacionfacial_lib_ios.ResponseCacher {
+    get
+  }
+  public static var doNotCache: zy_fpay_validacionfacial_lib_ios.ResponseCacher {
+    get
+  }
+  public static func modify(using closure: @escaping ((Foundation.URLSessionDataTask, Foundation.CachedURLResponse) -> Foundation.CachedURLResponse?)) -> zy_fpay_validacionfacial_lib_ios.ResponseCacher
+}
+@available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
+public struct DataResponsePublisher<Value> : Combine.Publisher {
+  public typealias Output = zy_fpay_validacionfacial_lib_ios.DataResponse<Value, zy_fpay_validacionfacial_lib_ios.AFError>
+  public typealias Failure = Swift.Never
+  public init<Serializer>(_ request: zy_fpay_validacionfacial_lib_ios.DataRequest, queue: Dispatch.DispatchQueue, serializer: Serializer) where Value == Serializer.SerializedObject, Serializer : zy_fpay_validacionfacial_lib_ios.ResponseSerializer
+  public init<Serializer>(_ request: zy_fpay_validacionfacial_lib_ios.DataRequest, queue: Dispatch.DispatchQueue, serializer: Serializer) where Value == Serializer.SerializedObject, Serializer : zy_fpay_validacionfacial_lib_ios.DataResponseSerializerProtocol
+  public func result() -> Combine.AnyPublisher<Swift.Result<Value, zy_fpay_validacionfacial_lib_ios.AFError>, Swift.Never>
+  public func value() -> Combine.AnyPublisher<Value, zy_fpay_validacionfacial_lib_ios.AFError>
+  public func receive<S>(subscriber: S) where S : Combine.Subscriber, S.Failure == Swift.Never, S.Input == zy_fpay_validacionfacial_lib_ios.DataResponse<Value, zy_fpay_validacionfacial_lib_ios.AFError>
+}
+@available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
+extension zy_fpay_validacionfacial_lib_ios.DataResponsePublisher where Value == Foundation.Data? {
+  @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
+  public init(_ request: zy_fpay_validacionfacial_lib_ios.DataRequest, queue: Dispatch.DispatchQueue)
+}
+extension zy_fpay_validacionfacial_lib_ios.DataRequest {
+  @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
+  public func publishResponse<Serializer, T>(using serializer: Serializer, on queue: Dispatch.DispatchQueue = .main) -> zy_fpay_validacionfacial_lib_ios.DataResponsePublisher<T> where Serializer : zy_fpay_validacionfacial_lib_ios.ResponseSerializer, T == Serializer.SerializedObject
+  @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
+  public func publishData(queue: Dispatch.DispatchQueue = .main, preprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = DataResponseSerializer.defaultDataPreprocessor, emptyResponseCodes: Swift.Set<Swift.Int> = DataResponseSerializer.defaultEmptyResponseCodes, emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = DataResponseSerializer.defaultEmptyRequestMethods) -> zy_fpay_validacionfacial_lib_ios.DataResponsePublisher<Foundation.Data>
+  @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
+  public func publishString(queue: Dispatch.DispatchQueue = .main, preprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = StringResponseSerializer.defaultDataPreprocessor, encoding: Swift.String.Encoding? = nil, emptyResponseCodes: Swift.Set<Swift.Int> = StringResponseSerializer.defaultEmptyResponseCodes, emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = StringResponseSerializer.defaultEmptyRequestMethods) -> zy_fpay_validacionfacial_lib_ios.DataResponsePublisher<Swift.String>
+  @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
+  @available(*, deprecated, message: "Renamed publishDecodable(type:queue:preprocessor:decoder:emptyResponseCodes:emptyRequestMethods).")
+  @_disfavoredOverload public func publishDecodable<T>(type: T.Type = T.self, queue: Dispatch.DispatchQueue = .main, preprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = DecodableResponseSerializer<T>.defaultDataPreprocessor, decoder: zy_fpay_validacionfacial_lib_ios.DataDecoder = JSONDecoder(), emptyResponseCodes: Swift.Set<Swift.Int> = DecodableResponseSerializer<T>.defaultEmptyResponseCodes, emptyResponseMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = DecodableResponseSerializer<T>.defaultEmptyRequestMethods) -> zy_fpay_validacionfacial_lib_ios.DataResponsePublisher<T> where T : Swift.Decodable
+  @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
+  public func publishDecodable<T>(type: T.Type = T.self, queue: Dispatch.DispatchQueue = .main, preprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = DecodableResponseSerializer<T>.defaultDataPreprocessor, decoder: zy_fpay_validacionfacial_lib_ios.DataDecoder = JSONDecoder(), emptyResponseCodes: Swift.Set<Swift.Int> = DecodableResponseSerializer<T>.defaultEmptyResponseCodes, emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = DecodableResponseSerializer<T>.defaultEmptyRequestMethods) -> zy_fpay_validacionfacial_lib_ios.DataResponsePublisher<T> where T : Swift.Decodable
+  @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
+  public func publishUnserialized(queue: Dispatch.DispatchQueue = .main) -> zy_fpay_validacionfacial_lib_ios.DataResponsePublisher<Foundation.Data?>
+}
+@available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
+public struct DataStreamPublisher<Value> : Combine.Publisher {
+  public typealias Output = zy_fpay_validacionfacial_lib_ios.DataStreamRequest.Stream<Value, zy_fpay_validacionfacial_lib_ios.AFError>
+  public typealias Failure = Swift.Never
+  public init<Serializer>(_ request: zy_fpay_validacionfacial_lib_ios.DataStreamRequest, queue: Dispatch.DispatchQueue, serializer: Serializer) where Value == Serializer.SerializedObject, Serializer : zy_fpay_validacionfacial_lib_ios.DataStreamSerializer
+  public func result() -> Combine.AnyPublisher<Swift.Result<Value, zy_fpay_validacionfacial_lib_ios.AFError>, Swift.Never>
+  public func value() -> Combine.AnyPublisher<Value, zy_fpay_validacionfacial_lib_ios.AFError>
+  public func receive<S>(subscriber: S) where S : Combine.Subscriber, S.Failure == Swift.Never, S.Input == zy_fpay_validacionfacial_lib_ios.DataStreamRequest.Stream<Value, zy_fpay_validacionfacial_lib_ios.AFError>
+}
+extension zy_fpay_validacionfacial_lib_ios.DataStreamRequest {
+  @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
+  final public func publishStream<Serializer>(using serializer: Serializer, on queue: Dispatch.DispatchQueue = .main) -> zy_fpay_validacionfacial_lib_ios.DataStreamPublisher<Serializer.SerializedObject> where Serializer : zy_fpay_validacionfacial_lib_ios.DataStreamSerializer
+  @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
+  final public func publishData(queue: Dispatch.DispatchQueue = .main) -> zy_fpay_validacionfacial_lib_ios.DataStreamPublisher<Foundation.Data>
+  @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
+  final public func publishString(queue: Dispatch.DispatchQueue = .main) -> zy_fpay_validacionfacial_lib_ios.DataStreamPublisher<Swift.String>
+  @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
+  final public func publishDecodable<T>(type: T.Type = T.self, queue: Dispatch.DispatchQueue = .main, decoder: zy_fpay_validacionfacial_lib_ios.DataDecoder = JSONDecoder(), preprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = PassthroughPreprocessor()) -> zy_fpay_validacionfacial_lib_ios.DataStreamPublisher<T> where T : Swift.Decodable
+}
+@available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
+public struct DownloadResponsePublisher<Value> : Combine.Publisher {
+  public typealias Output = zy_fpay_validacionfacial_lib_ios.DownloadResponse<Value, zy_fpay_validacionfacial_lib_ios.AFError>
+  public typealias Failure = Swift.Never
+  public init<Serializer>(_ request: zy_fpay_validacionfacial_lib_ios.DownloadRequest, queue: Dispatch.DispatchQueue, serializer: Serializer) where Value == Serializer.SerializedObject, Serializer : zy_fpay_validacionfacial_lib_ios.ResponseSerializer
+  @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
+  public init<Serializer>(_ request: zy_fpay_validacionfacial_lib_ios.DownloadRequest, queue: Dispatch.DispatchQueue, serializer: Serializer) where Value == Serializer.SerializedObject, Serializer : zy_fpay_validacionfacial_lib_ios.DownloadResponseSerializerProtocol
+  public func result() -> Combine.AnyPublisher<Swift.Result<Value, zy_fpay_validacionfacial_lib_ios.AFError>, Swift.Never>
+  public func value() -> Combine.AnyPublisher<Value, zy_fpay_validacionfacial_lib_ios.AFError>
+  public func receive<S>(subscriber: S) where S : Combine.Subscriber, S.Failure == Swift.Never, S.Input == zy_fpay_validacionfacial_lib_ios.DownloadResponse<Value, zy_fpay_validacionfacial_lib_ios.AFError>
+}
+extension zy_fpay_validacionfacial_lib_ios.DownloadRequest {
+  @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
+  public func publishResponse<Serializer, T>(using serializer: Serializer, on queue: Dispatch.DispatchQueue = .main) -> zy_fpay_validacionfacial_lib_ios.DownloadResponsePublisher<T> where Serializer : zy_fpay_validacionfacial_lib_ios.ResponseSerializer, T == Serializer.SerializedObject
+  @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
+  public func publishResponse<Serializer, T>(using serializer: Serializer, on queue: Dispatch.DispatchQueue = .main) -> zy_fpay_validacionfacial_lib_ios.DownloadResponsePublisher<T> where Serializer : zy_fpay_validacionfacial_lib_ios.DownloadResponseSerializerProtocol, T == Serializer.SerializedObject
+  @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
+  public func publishURL(queue: Dispatch.DispatchQueue = .main) -> zy_fpay_validacionfacial_lib_ios.DownloadResponsePublisher<Foundation.URL>
+  @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
+  public func publishData(queue: Dispatch.DispatchQueue = .main, preprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = DataResponseSerializer.defaultDataPreprocessor, emptyResponseCodes: Swift.Set<Swift.Int> = DataResponseSerializer.defaultEmptyResponseCodes, emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = DataResponseSerializer.defaultEmptyRequestMethods) -> zy_fpay_validacionfacial_lib_ios.DownloadResponsePublisher<Foundation.Data>
+  @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
+  public func publishString(queue: Dispatch.DispatchQueue = .main, preprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = StringResponseSerializer.defaultDataPreprocessor, encoding: Swift.String.Encoding? = nil, emptyResponseCodes: Swift.Set<Swift.Int> = StringResponseSerializer.defaultEmptyResponseCodes, emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = StringResponseSerializer.defaultEmptyRequestMethods) -> zy_fpay_validacionfacial_lib_ios.DownloadResponsePublisher<Swift.String>
+  @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
+  @available(*, deprecated, message: "Renamed publishDecodable(type:queue:preprocessor:decoder:emptyResponseCodes:emptyRequestMethods).")
+  @_disfavoredOverload public func publishDecodable<T>(type: T.Type = T.self, queue: Dispatch.DispatchQueue = .main, preprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = DecodableResponseSerializer<T>.defaultDataPreprocessor, decoder: zy_fpay_validacionfacial_lib_ios.DataDecoder = JSONDecoder(), emptyResponseCodes: Swift.Set<Swift.Int> = DecodableResponseSerializer<T>.defaultEmptyResponseCodes, emptyResponseMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = DecodableResponseSerializer<T>.defaultEmptyRequestMethods) -> zy_fpay_validacionfacial_lib_ios.DownloadResponsePublisher<T> where T : Swift.Decodable
+  @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
+  public func publishDecodable<T>(type: T.Type = T.self, queue: Dispatch.DispatchQueue = .main, preprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = DecodableResponseSerializer<T>.defaultDataPreprocessor, decoder: zy_fpay_validacionfacial_lib_ios.DataDecoder = JSONDecoder(), emptyResponseCodes: Swift.Set<Swift.Int> = DecodableResponseSerializer<T>.defaultEmptyResponseCodes, emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = DecodableResponseSerializer<T>.defaultEmptyRequestMethods) -> zy_fpay_validacionfacial_lib_ios.DownloadResponsePublisher<T> where T : Swift.Decodable
+}
+@available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
+extension zy_fpay_validacionfacial_lib_ios.DownloadResponsePublisher where Value == Foundation.URL? {
+  @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
+  public init(_ request: zy_fpay_validacionfacial_lib_ios.DownloadRequest, queue: Dispatch.DispatchQueue)
+}
+extension zy_fpay_validacionfacial_lib_ios.DownloadRequest {
+  @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
+  public func publishUnserialized(on queue: Dispatch.DispatchQueue = .main) -> zy_fpay_validacionfacial_lib_ios.DownloadResponsePublisher<Foundation.URL?>
+}
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension zy_fpay_validacionfacial_lib_ios.Request {
+  #if compiler(>=5.3) && $RethrowsProtocol
+  public func uploadProgress(bufferingPolicy: zy_fpay_validacionfacial_lib_ios.StreamOf<Foundation.Progress>.BufferingPolicy = .unbounded) -> zy_fpay_validacionfacial_lib_ios.StreamOf<Foundation.Progress>
+  #endif
+  #if compiler(>=5.3) && $RethrowsProtocol
+  public func downloadProgress(bufferingPolicy: zy_fpay_validacionfacial_lib_ios.StreamOf<Foundation.Progress>.BufferingPolicy = .unbounded) -> zy_fpay_validacionfacial_lib_ios.StreamOf<Foundation.Progress>
+  #endif
+  #if compiler(>=5.3) && $RethrowsProtocol
+  public func urlRequests(bufferingPolicy: zy_fpay_validacionfacial_lib_ios.StreamOf<Foundation.URLRequest>.BufferingPolicy = .unbounded) -> zy_fpay_validacionfacial_lib_ios.StreamOf<Foundation.URLRequest>
+  #endif
+  #if compiler(>=5.3) && $RethrowsProtocol
+  public func urlSessionTasks(bufferingPolicy: zy_fpay_validacionfacial_lib_ios.StreamOf<Foundation.URLSessionTask>.BufferingPolicy = .unbounded) -> zy_fpay_validacionfacial_lib_ios.StreamOf<Foundation.URLSessionTask>
+  #endif
+  #if compiler(>=5.3) && $RethrowsProtocol
+  public func cURLDescriptions(bufferingPolicy: zy_fpay_validacionfacial_lib_ios.StreamOf<Swift.String>.BufferingPolicy = .unbounded) -> zy_fpay_validacionfacial_lib_ios.StreamOf<Swift.String>
+  #endif
+}
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+public struct DataTask<Value> {
+  #if compiler(>=5.3) && $EffectfulProp
+  public var response: zy_fpay_validacionfacial_lib_ios.DataResponse<Value, zy_fpay_validacionfacial_lib_ios.AFError> {
+    get async
+  }
+  #endif
+  #if compiler(>=5.3) && $EffectfulProp
+  public var result: Swift.Result<Value, zy_fpay_validacionfacial_lib_ios.AFError> {
+    get async
+  }
+  #endif
+  #if compiler(>=5.3) && $EffectfulProp
+  public var value: Value {
+    get async throws
+  }
+  #endif
+  public func cancel()
+  public func resume()
+  public func suspend()
+}
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension zy_fpay_validacionfacial_lib_ios.DataRequest {
+  public func serializingData(automaticallyCancelling shouldAutomaticallyCancel: Swift.Bool = false, dataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = DataResponseSerializer.defaultDataPreprocessor, emptyResponseCodes: Swift.Set<Swift.Int> = DataResponseSerializer.defaultEmptyResponseCodes, emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = DataResponseSerializer.defaultEmptyRequestMethods) -> zy_fpay_validacionfacial_lib_ios.DataTask<Foundation.Data>
+  public func serializingDecodable<Value>(_ type: Value.Type = Value.self, automaticallyCancelling shouldAutomaticallyCancel: Swift.Bool = false, dataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = DecodableResponseSerializer<Value>.defaultDataPreprocessor, decoder: zy_fpay_validacionfacial_lib_ios.DataDecoder = JSONDecoder(), emptyResponseCodes: Swift.Set<Swift.Int> = DecodableResponseSerializer<Value>.defaultEmptyResponseCodes, emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = DecodableResponseSerializer<Value>.defaultEmptyRequestMethods) -> zy_fpay_validacionfacial_lib_ios.DataTask<Value> where Value : Swift.Decodable
+  public func serializingString(automaticallyCancelling shouldAutomaticallyCancel: Swift.Bool = false, dataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = StringResponseSerializer.defaultDataPreprocessor, encoding: Swift.String.Encoding? = nil, emptyResponseCodes: Swift.Set<Swift.Int> = StringResponseSerializer.defaultEmptyResponseCodes, emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = StringResponseSerializer.defaultEmptyRequestMethods) -> zy_fpay_validacionfacial_lib_ios.DataTask<Swift.String>
+  public func serializingResponse<Serializer>(using serializer: Serializer, automaticallyCancelling shouldAutomaticallyCancel: Swift.Bool = false) -> zy_fpay_validacionfacial_lib_ios.DataTask<Serializer.SerializedObject> where Serializer : zy_fpay_validacionfacial_lib_ios.ResponseSerializer
+  public func serializingResponse<Serializer>(using serializer: Serializer, automaticallyCancelling shouldAutomaticallyCancel: Swift.Bool = false) -> zy_fpay_validacionfacial_lib_ios.DataTask<Serializer.SerializedObject> where Serializer : zy_fpay_validacionfacial_lib_ios.DataResponseSerializerProtocol
+}
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+public struct DownloadTask<Value> {
+  #if compiler(>=5.3) && $EffectfulProp
+  public var response: zy_fpay_validacionfacial_lib_ios.DownloadResponse<Value, zy_fpay_validacionfacial_lib_ios.AFError> {
+    get async
+  }
+  #endif
+  #if compiler(>=5.3) && $EffectfulProp
+  public var result: Swift.Result<Value, zy_fpay_validacionfacial_lib_ios.AFError> {
+    get async
+  }
+  #endif
+  #if compiler(>=5.3) && $EffectfulProp
+  public var value: Value {
+    get async throws
+  }
+  #endif
+  public func cancel()
+  public func resume()
+  public func suspend()
+}
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension zy_fpay_validacionfacial_lib_ios.DownloadRequest {
+  public func serializingData(automaticallyCancelling shouldAutomaticallyCancel: Swift.Bool = false, dataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = DataResponseSerializer.defaultDataPreprocessor, emptyResponseCodes: Swift.Set<Swift.Int> = DataResponseSerializer.defaultEmptyResponseCodes, emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = DataResponseSerializer.defaultEmptyRequestMethods) -> zy_fpay_validacionfacial_lib_ios.DownloadTask<Foundation.Data>
+  public func serializingDecodable<Value>(_ type: Value.Type = Value.self, automaticallyCancelling shouldAutomaticallyCancel: Swift.Bool = false, dataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = DecodableResponseSerializer<Value>.defaultDataPreprocessor, decoder: zy_fpay_validacionfacial_lib_ios.DataDecoder = JSONDecoder(), emptyResponseCodes: Swift.Set<Swift.Int> = DecodableResponseSerializer<Value>.defaultEmptyResponseCodes, emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = DecodableResponseSerializer<Value>.defaultEmptyRequestMethods) -> zy_fpay_validacionfacial_lib_ios.DownloadTask<Value> where Value : Swift.Decodable
+  public func serializingDownloadedFileURL() -> zy_fpay_validacionfacial_lib_ios.DownloadTask<Foundation.URL>
+  public func serializingString(automaticallyCancelling shouldAutomaticallyCancel: Swift.Bool = false, dataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = StringResponseSerializer.defaultDataPreprocessor, encoding: Swift.String.Encoding? = nil, emptyResponseCodes: Swift.Set<Swift.Int> = StringResponseSerializer.defaultEmptyResponseCodes, emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = StringResponseSerializer.defaultEmptyRequestMethods) -> zy_fpay_validacionfacial_lib_ios.DownloadTask<Swift.String>
+  public func serializingDownload<Serializer>(using serializer: Serializer, automaticallyCancelling shouldAutomaticallyCancel: Swift.Bool = false) -> zy_fpay_validacionfacial_lib_ios.DownloadTask<Serializer.SerializedObject> where Serializer : zy_fpay_validacionfacial_lib_ios.ResponseSerializer
+  public func serializingDownload<Serializer>(using serializer: Serializer, automaticallyCancelling shouldAutomaticallyCancel: Swift.Bool = false) -> zy_fpay_validacionfacial_lib_ios.DownloadTask<Serializer.SerializedObject> where Serializer : zy_fpay_validacionfacial_lib_ios.DownloadResponseSerializerProtocol
+}
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+public struct DataStreamTask {
+  #if compiler(>=5.3) && $RethrowsProtocol
+  public typealias Stream<Success, Failure> = zy_fpay_validacionfacial_lib_ios.StreamOf<zy_fpay_validacionfacial_lib_ios.DataStreamRequest.Stream<Success, Failure>> where Failure : Swift.Error
+  #endif
+  #if compiler(>=5.3) && $RethrowsProtocol
+  public func streamingData(automaticallyCancelling shouldAutomaticallyCancel: Swift.Bool = true, bufferingPolicy: zy_fpay_validacionfacial_lib_ios.DataStreamTask.Stream<Foundation.Data, Swift.Never>.BufferingPolicy = .unbounded) -> zy_fpay_validacionfacial_lib_ios.DataStreamTask.Stream<Foundation.Data, Swift.Never>
+  #endif
+  #if compiler(>=5.3) && $RethrowsProtocol
+  public func streamingStrings(automaticallyCancelling shouldAutomaticallyCancel: Swift.Bool = true, bufferingPolicy: zy_fpay_validacionfacial_lib_ios.DataStreamTask.Stream<Swift.String, Swift.Never>.BufferingPolicy = .unbounded) -> zy_fpay_validacionfacial_lib_ios.DataStreamTask.Stream<Swift.String, Swift.Never>
+  #endif
+  #if compiler(>=5.3) && $RethrowsProtocol
+  public func streamingDecodables<T>(_ type: T.Type = T.self, automaticallyCancelling shouldAutomaticallyCancel: Swift.Bool = true, bufferingPolicy: zy_fpay_validacionfacial_lib_ios.DataStreamTask.Stream<T, zy_fpay_validacionfacial_lib_ios.AFError>.BufferingPolicy = .unbounded) -> zy_fpay_validacionfacial_lib_ios.DataStreamTask.Stream<T, zy_fpay_validacionfacial_lib_ios.AFError> where T : Swift.Decodable
+  #endif
+  #if compiler(>=5.3) && $RethrowsProtocol
+  public func streamingResponses<Serializer>(serializedUsing serializer: Serializer, automaticallyCancelling shouldAutomaticallyCancel: Swift.Bool = true, bufferingPolicy: zy_fpay_validacionfacial_lib_ios.DataStreamTask.Stream<Serializer.SerializedObject, zy_fpay_validacionfacial_lib_ios.AFError>.BufferingPolicy = .unbounded) -> zy_fpay_validacionfacial_lib_ios.DataStreamTask.Stream<Serializer.SerializedObject, zy_fpay_validacionfacial_lib_ios.AFError> where Serializer : zy_fpay_validacionfacial_lib_ios.DataStreamSerializer
+  #endif
+  public func cancel()
+  public func resume()
+  public func suspend()
+}
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension zy_fpay_validacionfacial_lib_ios.DataStreamRequest {
+  final public func streamTask() -> zy_fpay_validacionfacial_lib_ios.DataStreamTask
+}
+#if compiler(>=5.3) && $RethrowsProtocol
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+public struct StreamOf<Element> : _Concurrency.AsyncSequence {
+  public typealias AsyncIterator = zy_fpay_validacionfacial_lib_ios.StreamOf<Element>.Iterator
+  public typealias BufferingPolicy = _Concurrency.AsyncStream<Element>.Continuation.BufferingPolicy
+  public func makeAsyncIterator() -> zy_fpay_validacionfacial_lib_ios.StreamOf<Element>.Iterator
+  public struct Iterator : _Concurrency.AsyncIteratorProtocol {
+    #if compiler(>=5.3) && $AsyncAwait
+    public mutating func next() async -> Element?
+    #endif
+  }
+}
+#endif
+public enum ZyTApiErrorEnum : Swift.Int {
+  case EXITO
+  case ERROR_VALIDATION
+  case ERROR_UNSPECIFIED
+  case BADREQUEST
+  case INTERNAL_SERVER
+  case UNAUTHORIZED
+  case FORBIDDEN
+  case NOTFOUND
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+public func tipoDocToDni(tipoDocInput: Swift.String) -> Swift.String
+public func versionLibreria() -> Swift.String
+public protocol EventMonitor {
+  var queue: Dispatch.DispatchQueue { get }
+  func urlSession(_ session: Foundation.URLSession, didBecomeInvalidWithError error: Swift.Error?)
+  func urlSession(_ session: Foundation.URLSession, task: Foundation.URLSessionTask, didReceive challenge: Foundation.URLAuthenticationChallenge)
+  func urlSession(_ session: Foundation.URLSession, task: Foundation.URLSessionTask, didSendBodyData bytesSent: Swift.Int64, totalBytesSent: Swift.Int64, totalBytesExpectedToSend: Swift.Int64)
+  func urlSession(_ session: Foundation.URLSession, taskNeedsNewBodyStream task: Foundation.URLSessionTask)
+  func urlSession(_ session: Foundation.URLSession, task: Foundation.URLSessionTask, willPerformHTTPRedirection response: Foundation.HTTPURLResponse, newRequest request: Foundation.URLRequest)
+  func urlSession(_ session: Foundation.URLSession, task: Foundation.URLSessionTask, didFinishCollecting metrics: Foundation.URLSessionTaskMetrics)
+  func urlSession(_ session: Foundation.URLSession, task: Foundation.URLSessionTask, didCompleteWithError error: Swift.Error?)
+  @available(macOS 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
+  func urlSession(_ session: Foundation.URLSession, taskIsWaitingForConnectivity task: Foundation.URLSessionTask)
+  func urlSession(_ session: Foundation.URLSession, dataTask: Foundation.URLSessionDataTask, didReceive data: Foundation.Data)
+  func urlSession(_ session: Foundation.URLSession, dataTask: Foundation.URLSessionDataTask, willCacheResponse proposedResponse: Foundation.CachedURLResponse)
+  func urlSession(_ session: Foundation.URLSession, downloadTask: Foundation.URLSessionDownloadTask, didResumeAtOffset fileOffset: Swift.Int64, expectedTotalBytes: Swift.Int64)
+  func urlSession(_ session: Foundation.URLSession, downloadTask: Foundation.URLSessionDownloadTask, didWriteData bytesWritten: Swift.Int64, totalBytesWritten: Swift.Int64, totalBytesExpectedToWrite: Swift.Int64)
+  func urlSession(_ session: Foundation.URLSession, downloadTask: Foundation.URLSessionDownloadTask, didFinishDownloadingTo location: Foundation.URL)
+  func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didCreateInitialURLRequest urlRequest: Foundation.URLRequest)
+  func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didFailToCreateURLRequestWithError error: zy_fpay_validacionfacial_lib_ios.AFError)
+  func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didAdaptInitialRequest initialRequest: Foundation.URLRequest, to adaptedRequest: Foundation.URLRequest)
+  func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didFailToAdaptURLRequest initialRequest: Foundation.URLRequest, withError error: zy_fpay_validacionfacial_lib_ios.AFError)
+  func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didCreateURLRequest urlRequest: Foundation.URLRequest)
+  func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didCreateTask task: Foundation.URLSessionTask)
+  func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didGatherMetrics metrics: Foundation.URLSessionTaskMetrics)
+  func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didFailTask task: Foundation.URLSessionTask, earlyWithError error: zy_fpay_validacionfacial_lib_ios.AFError)
+  func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didCompleteTask task: Foundation.URLSessionTask, with error: zy_fpay_validacionfacial_lib_ios.AFError?)
+  func requestIsRetrying(_ request: zy_fpay_validacionfacial_lib_ios.Request)
+  func requestDidFinish(_ request: zy_fpay_validacionfacial_lib_ios.Request)
+  func requestDidResume(_ request: zy_fpay_validacionfacial_lib_ios.Request)
+  func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didResumeTask task: Foundation.URLSessionTask)
+  func requestDidSuspend(_ request: zy_fpay_validacionfacial_lib_ios.Request)
+  func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didSuspendTask task: Foundation.URLSessionTask)
+  func requestDidCancel(_ request: zy_fpay_validacionfacial_lib_ios.Request)
+  func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didCancelTask task: Foundation.URLSessionTask)
+  func request(_ request: zy_fpay_validacionfacial_lib_ios.DataRequest, didValidateRequest urlRequest: Foundation.URLRequest?, response: Foundation.HTTPURLResponse, data: Foundation.Data?, withResult result: zy_fpay_validacionfacial_lib_ios.Request.ValidationResult)
+  func request(_ request: zy_fpay_validacionfacial_lib_ios.DataRequest, didParseResponse response: zy_fpay_validacionfacial_lib_ios.DataResponse<Foundation.Data?, zy_fpay_validacionfacial_lib_ios.AFError>)
+  func request<Value>(_ request: zy_fpay_validacionfacial_lib_ios.DataRequest, didParseResponse response: zy_fpay_validacionfacial_lib_ios.DataResponse<Value, zy_fpay_validacionfacial_lib_ios.AFError>)
+  func request(_ request: zy_fpay_validacionfacial_lib_ios.DataStreamRequest, didValidateRequest urlRequest: Foundation.URLRequest?, response: Foundation.HTTPURLResponse, withResult result: zy_fpay_validacionfacial_lib_ios.Request.ValidationResult)
+  func request<Value>(_ request: zy_fpay_validacionfacial_lib_ios.DataStreamRequest, didParseStream result: Swift.Result<Value, zy_fpay_validacionfacial_lib_ios.AFError>)
+  func request(_ request: zy_fpay_validacionfacial_lib_ios.UploadRequest, didCreateUploadable uploadable: zy_fpay_validacionfacial_lib_ios.UploadRequest.Uploadable)
+  func request(_ request: zy_fpay_validacionfacial_lib_ios.UploadRequest, didFailToCreateUploadableWithError error: zy_fpay_validacionfacial_lib_ios.AFError)
+  func request(_ request: zy_fpay_validacionfacial_lib_ios.UploadRequest, didProvideInputStream stream: Foundation.InputStream)
+  func request(_ request: zy_fpay_validacionfacial_lib_ios.DownloadRequest, didFinishDownloadingUsing task: Foundation.URLSessionTask, with result: Swift.Result<Foundation.URL, zy_fpay_validacionfacial_lib_ios.AFError>)
+  func request(_ request: zy_fpay_validacionfacial_lib_ios.DownloadRequest, didCreateDestinationURL url: Foundation.URL)
+  func request(_ request: zy_fpay_validacionfacial_lib_ios.DownloadRequest, didValidateRequest urlRequest: Foundation.URLRequest?, response: Foundation.HTTPURLResponse, fileURL: Foundation.URL?, withResult result: zy_fpay_validacionfacial_lib_ios.Request.ValidationResult)
+  func request(_ request: zy_fpay_validacionfacial_lib_ios.DownloadRequest, didParseResponse response: zy_fpay_validacionfacial_lib_ios.DownloadResponse<Foundation.URL?, zy_fpay_validacionfacial_lib_ios.AFError>)
+  func request<Value>(_ request: zy_fpay_validacionfacial_lib_ios.DownloadRequest, didParseResponse response: zy_fpay_validacionfacial_lib_ios.DownloadResponse<Value, zy_fpay_validacionfacial_lib_ios.AFError>)
+}
+extension zy_fpay_validacionfacial_lib_ios.EventMonitor {
+  public var queue: Dispatch.DispatchQueue {
+    get
+  }
+  public func urlSession(_ session: Foundation.URLSession, didBecomeInvalidWithError error: Swift.Error?)
+  public func urlSession(_ session: Foundation.URLSession, task: Foundation.URLSessionTask, didReceive challenge: Foundation.URLAuthenticationChallenge)
+  public func urlSession(_ session: Foundation.URLSession, task: Foundation.URLSessionTask, didSendBodyData bytesSent: Swift.Int64, totalBytesSent: Swift.Int64, totalBytesExpectedToSend: Swift.Int64)
+  public func urlSession(_ session: Foundation.URLSession, taskNeedsNewBodyStream task: Foundation.URLSessionTask)
+  public func urlSession(_ session: Foundation.URLSession, task: Foundation.URLSessionTask, willPerformHTTPRedirection response: Foundation.HTTPURLResponse, newRequest request: Foundation.URLRequest)
+  public func urlSession(_ session: Foundation.URLSession, task: Foundation.URLSessionTask, didFinishCollecting metrics: Foundation.URLSessionTaskMetrics)
+  public func urlSession(_ session: Foundation.URLSession, task: Foundation.URLSessionTask, didCompleteWithError error: Swift.Error?)
+  public func urlSession(_ session: Foundation.URLSession, taskIsWaitingForConnectivity task: Foundation.URLSessionTask)
+  public func urlSession(_ session: Foundation.URLSession, dataTask: Foundation.URLSessionDataTask, didReceive data: Foundation.Data)
+  public func urlSession(_ session: Foundation.URLSession, dataTask: Foundation.URLSessionDataTask, willCacheResponse proposedResponse: Foundation.CachedURLResponse)
+  public func urlSession(_ session: Foundation.URLSession, downloadTask: Foundation.URLSessionDownloadTask, didResumeAtOffset fileOffset: Swift.Int64, expectedTotalBytes: Swift.Int64)
+  public func urlSession(_ session: Foundation.URLSession, downloadTask: Foundation.URLSessionDownloadTask, didWriteData bytesWritten: Swift.Int64, totalBytesWritten: Swift.Int64, totalBytesExpectedToWrite: Swift.Int64)
+  public func urlSession(_ session: Foundation.URLSession, downloadTask: Foundation.URLSessionDownloadTask, didFinishDownloadingTo location: Foundation.URL)
+  public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didCreateInitialURLRequest urlRequest: Foundation.URLRequest)
+  public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didFailToCreateURLRequestWithError error: zy_fpay_validacionfacial_lib_ios.AFError)
+  public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didAdaptInitialRequest initialRequest: Foundation.URLRequest, to adaptedRequest: Foundation.URLRequest)
+  public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didFailToAdaptURLRequest initialRequest: Foundation.URLRequest, withError error: zy_fpay_validacionfacial_lib_ios.AFError)
+  public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didCreateURLRequest urlRequest: Foundation.URLRequest)
+  public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didCreateTask task: Foundation.URLSessionTask)
+  public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didGatherMetrics metrics: Foundation.URLSessionTaskMetrics)
+  public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didFailTask task: Foundation.URLSessionTask, earlyWithError error: zy_fpay_validacionfacial_lib_ios.AFError)
+  public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didCompleteTask task: Foundation.URLSessionTask, with error: zy_fpay_validacionfacial_lib_ios.AFError?)
+  public func requestIsRetrying(_ request: zy_fpay_validacionfacial_lib_ios.Request)
+  public func requestDidFinish(_ request: zy_fpay_validacionfacial_lib_ios.Request)
+  public func requestDidResume(_ request: zy_fpay_validacionfacial_lib_ios.Request)
+  public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didResumeTask task: Foundation.URLSessionTask)
+  public func requestDidSuspend(_ request: zy_fpay_validacionfacial_lib_ios.Request)
+  public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didSuspendTask task: Foundation.URLSessionTask)
+  public func requestDidCancel(_ request: zy_fpay_validacionfacial_lib_ios.Request)
+  public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didCancelTask task: Foundation.URLSessionTask)
+  public func request(_ request: zy_fpay_validacionfacial_lib_ios.DataRequest, didValidateRequest urlRequest: Foundation.URLRequest?, response: Foundation.HTTPURLResponse, data: Foundation.Data?, withResult result: zy_fpay_validacionfacial_lib_ios.Request.ValidationResult)
+  public func request(_ request: zy_fpay_validacionfacial_lib_ios.DataRequest, didParseResponse response: zy_fpay_validacionfacial_lib_ios.DataResponse<Foundation.Data?, zy_fpay_validacionfacial_lib_ios.AFError>)
+  public func request<Value>(_ request: zy_fpay_validacionfacial_lib_ios.DataRequest, didParseResponse response: zy_fpay_validacionfacial_lib_ios.DataResponse<Value, zy_fpay_validacionfacial_lib_ios.AFError>)
+  public func request(_ request: zy_fpay_validacionfacial_lib_ios.DataStreamRequest, didValidateRequest urlRequest: Foundation.URLRequest?, response: Foundation.HTTPURLResponse, withResult result: zy_fpay_validacionfacial_lib_ios.Request.ValidationResult)
+  public func request<Value>(_ request: zy_fpay_validacionfacial_lib_ios.DataStreamRequest, didParseStream result: Swift.Result<Value, zy_fpay_validacionfacial_lib_ios.AFError>)
+  public func request(_ request: zy_fpay_validacionfacial_lib_ios.UploadRequest, didCreateUploadable uploadable: zy_fpay_validacionfacial_lib_ios.UploadRequest.Uploadable)
+  public func request(_ request: zy_fpay_validacionfacial_lib_ios.UploadRequest, didFailToCreateUploadableWithError error: zy_fpay_validacionfacial_lib_ios.AFError)
+  public func request(_ request: zy_fpay_validacionfacial_lib_ios.UploadRequest, didProvideInputStream stream: Foundation.InputStream)
+  public func request(_ request: zy_fpay_validacionfacial_lib_ios.DownloadRequest, didFinishDownloadingUsing task: Foundation.URLSessionTask, with result: Swift.Result<Foundation.URL, zy_fpay_validacionfacial_lib_ios.AFError>)
+  public func request(_ request: zy_fpay_validacionfacial_lib_ios.DownloadRequest, didCreateDestinationURL url: Foundation.URL)
+  public func request(_ request: zy_fpay_validacionfacial_lib_ios.DownloadRequest, didValidateRequest urlRequest: Foundation.URLRequest?, response: Foundation.HTTPURLResponse, fileURL: Foundation.URL?, withResult result: zy_fpay_validacionfacial_lib_ios.Request.ValidationResult)
+  public func request(_ request: zy_fpay_validacionfacial_lib_ios.DownloadRequest, didParseResponse response: zy_fpay_validacionfacial_lib_ios.DownloadResponse<Foundation.URL?, zy_fpay_validacionfacial_lib_ios.AFError>)
+  public func request<Value>(_ request: zy_fpay_validacionfacial_lib_ios.DownloadRequest, didParseResponse response: zy_fpay_validacionfacial_lib_ios.DownloadResponse<Value, zy_fpay_validacionfacial_lib_ios.AFError>)
+}
+@_hasMissingDesignatedInitializers final public class CompositeEventMonitor : zy_fpay_validacionfacial_lib_ios.EventMonitor {
+  final public let queue: Dispatch.DispatchQueue
+  final public func urlSession(_ session: Foundation.URLSession, didBecomeInvalidWithError error: Swift.Error?)
+  final public func urlSession(_ session: Foundation.URLSession, task: Foundation.URLSessionTask, didReceive challenge: Foundation.URLAuthenticationChallenge)
+  final public func urlSession(_ session: Foundation.URLSession, task: Foundation.URLSessionTask, didSendBodyData bytesSent: Swift.Int64, totalBytesSent: Swift.Int64, totalBytesExpectedToSend: Swift.Int64)
+  final public func urlSession(_ session: Foundation.URLSession, taskNeedsNewBodyStream task: Foundation.URLSessionTask)
+  final public func urlSession(_ session: Foundation.URLSession, task: Foundation.URLSessionTask, willPerformHTTPRedirection response: Foundation.HTTPURLResponse, newRequest request: Foundation.URLRequest)
+  final public func urlSession(_ session: Foundation.URLSession, task: Foundation.URLSessionTask, didFinishCollecting metrics: Foundation.URLSessionTaskMetrics)
+  final public func urlSession(_ session: Foundation.URLSession, task: Foundation.URLSessionTask, didCompleteWithError error: Swift.Error?)
+  @available(macOS 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
+  final public func urlSession(_ session: Foundation.URLSession, taskIsWaitingForConnectivity task: Foundation.URLSessionTask)
+  final public func urlSession(_ session: Foundation.URLSession, dataTask: Foundation.URLSessionDataTask, didReceive data: Foundation.Data)
+  final public func urlSession(_ session: Foundation.URLSession, dataTask: Foundation.URLSessionDataTask, willCacheResponse proposedResponse: Foundation.CachedURLResponse)
+  final public func urlSession(_ session: Foundation.URLSession, downloadTask: Foundation.URLSessionDownloadTask, didResumeAtOffset fileOffset: Swift.Int64, expectedTotalBytes: Swift.Int64)
+  final public func urlSession(_ session: Foundation.URLSession, downloadTask: Foundation.URLSessionDownloadTask, didWriteData bytesWritten: Swift.Int64, totalBytesWritten: Swift.Int64, totalBytesExpectedToWrite: Swift.Int64)
+  final public func urlSession(_ session: Foundation.URLSession, downloadTask: Foundation.URLSessionDownloadTask, didFinishDownloadingTo location: Foundation.URL)
+  final public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didCreateInitialURLRequest urlRequest: Foundation.URLRequest)
+  final public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didFailToCreateURLRequestWithError error: zy_fpay_validacionfacial_lib_ios.AFError)
+  final public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didAdaptInitialRequest initialRequest: Foundation.URLRequest, to adaptedRequest: Foundation.URLRequest)
+  final public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didFailToAdaptURLRequest initialRequest: Foundation.URLRequest, withError error: zy_fpay_validacionfacial_lib_ios.AFError)
+  final public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didCreateURLRequest urlRequest: Foundation.URLRequest)
+  final public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didCreateTask task: Foundation.URLSessionTask)
+  final public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didGatherMetrics metrics: Foundation.URLSessionTaskMetrics)
+  final public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didFailTask task: Foundation.URLSessionTask, earlyWithError error: zy_fpay_validacionfacial_lib_ios.AFError)
+  final public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didCompleteTask task: Foundation.URLSessionTask, with error: zy_fpay_validacionfacial_lib_ios.AFError?)
+  final public func requestIsRetrying(_ request: zy_fpay_validacionfacial_lib_ios.Request)
+  final public func requestDidFinish(_ request: zy_fpay_validacionfacial_lib_ios.Request)
+  final public func requestDidResume(_ request: zy_fpay_validacionfacial_lib_ios.Request)
+  final public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didResumeTask task: Foundation.URLSessionTask)
+  final public func requestDidSuspend(_ request: zy_fpay_validacionfacial_lib_ios.Request)
+  final public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didSuspendTask task: Foundation.URLSessionTask)
+  final public func requestDidCancel(_ request: zy_fpay_validacionfacial_lib_ios.Request)
+  final public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didCancelTask task: Foundation.URLSessionTask)
+  final public func request(_ request: zy_fpay_validacionfacial_lib_ios.DataRequest, didValidateRequest urlRequest: Foundation.URLRequest?, response: Foundation.HTTPURLResponse, data: Foundation.Data?, withResult result: zy_fpay_validacionfacial_lib_ios.Request.ValidationResult)
+  final public func request(_ request: zy_fpay_validacionfacial_lib_ios.DataRequest, didParseResponse response: zy_fpay_validacionfacial_lib_ios.DataResponse<Foundation.Data?, zy_fpay_validacionfacial_lib_ios.AFError>)
+  final public func request<Value>(_ request: zy_fpay_validacionfacial_lib_ios.DataRequest, didParseResponse response: zy_fpay_validacionfacial_lib_ios.DataResponse<Value, zy_fpay_validacionfacial_lib_ios.AFError>)
+  final public func request(_ request: zy_fpay_validacionfacial_lib_ios.DataStreamRequest, didValidateRequest urlRequest: Foundation.URLRequest?, response: Foundation.HTTPURLResponse, withResult result: zy_fpay_validacionfacial_lib_ios.Request.ValidationResult)
+  final public func request<Value>(_ request: zy_fpay_validacionfacial_lib_ios.DataStreamRequest, didParseStream result: Swift.Result<Value, zy_fpay_validacionfacial_lib_ios.AFError>)
+  final public func request(_ request: zy_fpay_validacionfacial_lib_ios.UploadRequest, didCreateUploadable uploadable: zy_fpay_validacionfacial_lib_ios.UploadRequest.Uploadable)
+  final public func request(_ request: zy_fpay_validacionfacial_lib_ios.UploadRequest, didFailToCreateUploadableWithError error: zy_fpay_validacionfacial_lib_ios.AFError)
+  final public func request(_ request: zy_fpay_validacionfacial_lib_ios.UploadRequest, didProvideInputStream stream: Foundation.InputStream)
+  final public func request(_ request: zy_fpay_validacionfacial_lib_ios.DownloadRequest, didFinishDownloadingUsing task: Foundation.URLSessionTask, with result: Swift.Result<Foundation.URL, zy_fpay_validacionfacial_lib_ios.AFError>)
+  final public func request(_ request: zy_fpay_validacionfacial_lib_ios.DownloadRequest, didCreateDestinationURL url: Foundation.URL)
+  final public func request(_ request: zy_fpay_validacionfacial_lib_ios.DownloadRequest, didValidateRequest urlRequest: Foundation.URLRequest?, response: Foundation.HTTPURLResponse, fileURL: Foundation.URL?, withResult result: zy_fpay_validacionfacial_lib_ios.Request.ValidationResult)
+  final public func request(_ request: zy_fpay_validacionfacial_lib_ios.DownloadRequest, didParseResponse response: zy_fpay_validacionfacial_lib_ios.DownloadResponse<Foundation.URL?, zy_fpay_validacionfacial_lib_ios.AFError>)
+  final public func request<Value>(_ request: zy_fpay_validacionfacial_lib_ios.DownloadRequest, didParseResponse response: zy_fpay_validacionfacial_lib_ios.DownloadResponse<Value, zy_fpay_validacionfacial_lib_ios.AFError>)
+  @objc deinit
+}
+open class ClosureEventMonitor : zy_fpay_validacionfacial_lib_ios.EventMonitor {
+  open var sessionDidBecomeInvalidWithError: ((Foundation.URLSession, Swift.Error?) -> Swift.Void)?
+  open var taskDidReceiveChallenge: ((Foundation.URLSession, Foundation.URLSessionTask, Foundation.URLAuthenticationChallenge) -> Swift.Void)?
+  open var taskDidSendBodyData: ((Foundation.URLSession, Foundation.URLSessionTask, Swift.Int64, Swift.Int64, Swift.Int64) -> Swift.Void)?
+  open var taskNeedNewBodyStream: ((Foundation.URLSession, Foundation.URLSessionTask) -> Swift.Void)?
+  open var taskWillPerformHTTPRedirection: ((Foundation.URLSession, Foundation.URLSessionTask, Foundation.HTTPURLResponse, Foundation.URLRequest) -> Swift.Void)?
+  open var taskDidFinishCollectingMetrics: ((Foundation.URLSession, Foundation.URLSessionTask, Foundation.URLSessionTaskMetrics) -> Swift.Void)?
+  open var taskDidComplete: ((Foundation.URLSession, Foundation.URLSessionTask, Swift.Error?) -> Swift.Void)?
+  open var taskIsWaitingForConnectivity: ((Foundation.URLSession, Foundation.URLSessionTask) -> Swift.Void)?
+  open var dataTaskDidReceiveData: ((Foundation.URLSession, Foundation.URLSessionDataTask, Foundation.Data) -> Swift.Void)?
+  open var dataTaskWillCacheResponse: ((Foundation.URLSession, Foundation.URLSessionDataTask, Foundation.CachedURLResponse) -> Swift.Void)?
+  open var downloadTaskDidFinishDownloadingToURL: ((Foundation.URLSession, Foundation.URLSessionDownloadTask, Foundation.URL) -> Swift.Void)?
+  open var downloadTaskDidWriteData: ((Foundation.URLSession, Foundation.URLSessionDownloadTask, Swift.Int64, Swift.Int64, Swift.Int64) -> Swift.Void)?
+  open var downloadTaskDidResumeAtOffset: ((Foundation.URLSession, Foundation.URLSessionDownloadTask, Swift.Int64, Swift.Int64) -> Swift.Void)?
+  open var requestDidCreateInitialURLRequest: ((zy_fpay_validacionfacial_lib_ios.Request, Foundation.URLRequest) -> Swift.Void)?
+  open var requestDidFailToCreateURLRequestWithError: ((zy_fpay_validacionfacial_lib_ios.Request, zy_fpay_validacionfacial_lib_ios.AFError) -> Swift.Void)?
+  open var requestDidAdaptInitialRequestToAdaptedRequest: ((zy_fpay_validacionfacial_lib_ios.Request, Foundation.URLRequest, Foundation.URLRequest) -> Swift.Void)?
+  open var requestDidFailToAdaptURLRequestWithError: ((zy_fpay_validacionfacial_lib_ios.Request, Foundation.URLRequest, zy_fpay_validacionfacial_lib_ios.AFError) -> Swift.Void)?
+  open var requestDidCreateURLRequest: ((zy_fpay_validacionfacial_lib_ios.Request, Foundation.URLRequest) -> Swift.Void)?
+  open var requestDidCreateTask: ((zy_fpay_validacionfacial_lib_ios.Request, Foundation.URLSessionTask) -> Swift.Void)?
+  open var requestDidGatherMetrics: ((zy_fpay_validacionfacial_lib_ios.Request, Foundation.URLSessionTaskMetrics) -> Swift.Void)?
+  open var requestDidFailTaskEarlyWithError: ((zy_fpay_validacionfacial_lib_ios.Request, Foundation.URLSessionTask, zy_fpay_validacionfacial_lib_ios.AFError) -> Swift.Void)?
+  open var requestDidCompleteTaskWithError: ((zy_fpay_validacionfacial_lib_ios.Request, Foundation.URLSessionTask, zy_fpay_validacionfacial_lib_ios.AFError?) -> Swift.Void)?
+  open var requestIsRetrying: ((zy_fpay_validacionfacial_lib_ios.Request) -> Swift.Void)?
+  open var requestDidFinish: ((zy_fpay_validacionfacial_lib_ios.Request) -> Swift.Void)?
+  open var requestDidResume: ((zy_fpay_validacionfacial_lib_ios.Request) -> Swift.Void)?
+  open var requestDidResumeTask: ((zy_fpay_validacionfacial_lib_ios.Request, Foundation.URLSessionTask) -> Swift.Void)?
+  open var requestDidSuspend: ((zy_fpay_validacionfacial_lib_ios.Request) -> Swift.Void)?
+  open var requestDidSuspendTask: ((zy_fpay_validacionfacial_lib_ios.Request, Foundation.URLSessionTask) -> Swift.Void)?
+  open var requestDidCancel: ((zy_fpay_validacionfacial_lib_ios.Request) -> Swift.Void)?
+  open var requestDidCancelTask: ((zy_fpay_validacionfacial_lib_ios.Request, Foundation.URLSessionTask) -> Swift.Void)?
+  open var requestDidValidateRequestResponseDataWithResult: ((zy_fpay_validacionfacial_lib_ios.DataRequest, Foundation.URLRequest?, Foundation.HTTPURLResponse, Foundation.Data?, zy_fpay_validacionfacial_lib_ios.Request.ValidationResult) -> Swift.Void)?
+  open var requestDidParseResponse: ((zy_fpay_validacionfacial_lib_ios.DataRequest, zy_fpay_validacionfacial_lib_ios.DataResponse<Foundation.Data?, zy_fpay_validacionfacial_lib_ios.AFError>) -> Swift.Void)?
+  open var requestDidValidateRequestResponseWithResult: ((zy_fpay_validacionfacial_lib_ios.DataStreamRequest, Foundation.URLRequest?, Foundation.HTTPURLResponse, zy_fpay_validacionfacial_lib_ios.Request.ValidationResult) -> Swift.Void)?
+  open var requestDidCreateUploadable: ((zy_fpay_validacionfacial_lib_ios.UploadRequest, zy_fpay_validacionfacial_lib_ios.UploadRequest.Uploadable) -> Swift.Void)?
+  open var requestDidFailToCreateUploadableWithError: ((zy_fpay_validacionfacial_lib_ios.UploadRequest, zy_fpay_validacionfacial_lib_ios.AFError) -> Swift.Void)?
+  open var requestDidProvideInputStream: ((zy_fpay_validacionfacial_lib_ios.UploadRequest, Foundation.InputStream) -> Swift.Void)?
+  open var requestDidFinishDownloadingUsingTaskWithResult: ((zy_fpay_validacionfacial_lib_ios.DownloadRequest, Foundation.URLSessionTask, Swift.Result<Foundation.URL, zy_fpay_validacionfacial_lib_ios.AFError>) -> Swift.Void)?
+  open var requestDidCreateDestinationURL: ((zy_fpay_validacionfacial_lib_ios.DownloadRequest, Foundation.URL) -> Swift.Void)?
+  open var requestDidValidateRequestResponseFileURLWithResult: ((zy_fpay_validacionfacial_lib_ios.DownloadRequest, Foundation.URLRequest?, Foundation.HTTPURLResponse, Foundation.URL?, zy_fpay_validacionfacial_lib_ios.Request.ValidationResult) -> Swift.Void)?
+  open var requestDidParseDownloadResponse: ((zy_fpay_validacionfacial_lib_ios.DownloadRequest, zy_fpay_validacionfacial_lib_ios.DownloadResponse<Foundation.URL?, zy_fpay_validacionfacial_lib_ios.AFError>) -> Swift.Void)?
+  final public let queue: Dispatch.DispatchQueue
+  public init(queue: Dispatch.DispatchQueue = .main)
+  open func urlSession(_ session: Foundation.URLSession, didBecomeInvalidWithError error: Swift.Error?)
+  open func urlSession(_ session: Foundation.URLSession, task: Foundation.URLSessionTask, didReceive challenge: Foundation.URLAuthenticationChallenge)
+  open func urlSession(_ session: Foundation.URLSession, task: Foundation.URLSessionTask, didSendBodyData bytesSent: Swift.Int64, totalBytesSent: Swift.Int64, totalBytesExpectedToSend: Swift.Int64)
+  open func urlSession(_ session: Foundation.URLSession, taskNeedsNewBodyStream task: Foundation.URLSessionTask)
+  open func urlSession(_ session: Foundation.URLSession, task: Foundation.URLSessionTask, willPerformHTTPRedirection response: Foundation.HTTPURLResponse, newRequest request: Foundation.URLRequest)
+  open func urlSession(_ session: Foundation.URLSession, task: Foundation.URLSessionTask, didFinishCollecting metrics: Foundation.URLSessionTaskMetrics)
+  open func urlSession(_ session: Foundation.URLSession, task: Foundation.URLSessionTask, didCompleteWithError error: Swift.Error?)
+  open func urlSession(_ session: Foundation.URLSession, taskIsWaitingForConnectivity task: Foundation.URLSessionTask)
+  open func urlSession(_ session: Foundation.URLSession, dataTask: Foundation.URLSessionDataTask, didReceive data: Foundation.Data)
+  open func urlSession(_ session: Foundation.URLSession, dataTask: Foundation.URLSessionDataTask, willCacheResponse proposedResponse: Foundation.CachedURLResponse)
+  open func urlSession(_ session: Foundation.URLSession, downloadTask: Foundation.URLSessionDownloadTask, didResumeAtOffset fileOffset: Swift.Int64, expectedTotalBytes: Swift.Int64)
+  open func urlSession(_ session: Foundation.URLSession, downloadTask: Foundation.URLSessionDownloadTask, didWriteData bytesWritten: Swift.Int64, totalBytesWritten: Swift.Int64, totalBytesExpectedToWrite: Swift.Int64)
+  open func urlSession(_ session: Foundation.URLSession, downloadTask: Foundation.URLSessionDownloadTask, didFinishDownloadingTo location: Foundation.URL)
+  open func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didCreateInitialURLRequest urlRequest: Foundation.URLRequest)
+  open func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didFailToCreateURLRequestWithError error: zy_fpay_validacionfacial_lib_ios.AFError)
+  open func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didAdaptInitialRequest initialRequest: Foundation.URLRequest, to adaptedRequest: Foundation.URLRequest)
+  open func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didFailToAdaptURLRequest initialRequest: Foundation.URLRequest, withError error: zy_fpay_validacionfacial_lib_ios.AFError)
+  open func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didCreateURLRequest urlRequest: Foundation.URLRequest)
+  open func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didCreateTask task: Foundation.URLSessionTask)
+  open func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didGatherMetrics metrics: Foundation.URLSessionTaskMetrics)
+  open func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didFailTask task: Foundation.URLSessionTask, earlyWithError error: zy_fpay_validacionfacial_lib_ios.AFError)
+  open func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didCompleteTask task: Foundation.URLSessionTask, with error: zy_fpay_validacionfacial_lib_ios.AFError?)
+  open func requestIsRetrying(_ request: zy_fpay_validacionfacial_lib_ios.Request)
+  open func requestDidFinish(_ request: zy_fpay_validacionfacial_lib_ios.Request)
+  open func requestDidResume(_ request: zy_fpay_validacionfacial_lib_ios.Request)
+  public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didResumeTask task: Foundation.URLSessionTask)
+  open func requestDidSuspend(_ request: zy_fpay_validacionfacial_lib_ios.Request)
+  public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didSuspendTask task: Foundation.URLSessionTask)
+  open func requestDidCancel(_ request: zy_fpay_validacionfacial_lib_ios.Request)
+  public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didCancelTask task: Foundation.URLSessionTask)
+  open func request(_ request: zy_fpay_validacionfacial_lib_ios.DataRequest, didValidateRequest urlRequest: Foundation.URLRequest?, response: Foundation.HTTPURLResponse, data: Foundation.Data?, withResult result: zy_fpay_validacionfacial_lib_ios.Request.ValidationResult)
+  open func request(_ request: zy_fpay_validacionfacial_lib_ios.DataRequest, didParseResponse response: zy_fpay_validacionfacial_lib_ios.DataResponse<Foundation.Data?, zy_fpay_validacionfacial_lib_ios.AFError>)
+  public func request(_ request: zy_fpay_validacionfacial_lib_ios.DataStreamRequest, didValidateRequest urlRequest: Foundation.URLRequest?, response: Foundation.HTTPURLResponse, withResult result: zy_fpay_validacionfacial_lib_ios.Request.ValidationResult)
+  open func request(_ request: zy_fpay_validacionfacial_lib_ios.UploadRequest, didCreateUploadable uploadable: zy_fpay_validacionfacial_lib_ios.UploadRequest.Uploadable)
+  open func request(_ request: zy_fpay_validacionfacial_lib_ios.UploadRequest, didFailToCreateUploadableWithError error: zy_fpay_validacionfacial_lib_ios.AFError)
+  open func request(_ request: zy_fpay_validacionfacial_lib_ios.UploadRequest, didProvideInputStream stream: Foundation.InputStream)
+  open func request(_ request: zy_fpay_validacionfacial_lib_ios.DownloadRequest, didFinishDownloadingUsing task: Foundation.URLSessionTask, with result: Swift.Result<Foundation.URL, zy_fpay_validacionfacial_lib_ios.AFError>)
+  open func request(_ request: zy_fpay_validacionfacial_lib_ios.DownloadRequest, didCreateDestinationURL url: Foundation.URL)
+  open func request(_ request: zy_fpay_validacionfacial_lib_ios.DownloadRequest, didValidateRequest urlRequest: Foundation.URLRequest?, response: Foundation.HTTPURLResponse, fileURL: Foundation.URL?, withResult result: zy_fpay_validacionfacial_lib_ios.Request.ValidationResult)
+  open func request(_ request: zy_fpay_validacionfacial_lib_ios.DownloadRequest, didParseResponse response: zy_fpay_validacionfacial_lib_ios.DownloadResponse<Foundation.URL?, zy_fpay_validacionfacial_lib_ios.AFError>)
+  @objc deinit
+}
+extension UIKit.UIColor {
+  convenience public init?(hex: Swift.String)
+}
+public struct HTTPHeaders {
+  public init()
+  public init(_ headers: [zy_fpay_validacionfacial_lib_ios.HTTPHeader])
+  public init(_ dictionary: [Swift.String : Swift.String])
+  public mutating func add(name: Swift.String, value: Swift.String)
+  public mutating func add(_ header: zy_fpay_validacionfacial_lib_ios.HTTPHeader)
+  public mutating func update(name: Swift.String, value: Swift.String)
+  public mutating func update(_ header: zy_fpay_validacionfacial_lib_ios.HTTPHeader)
+  public mutating func remove(name: Swift.String)
+  public mutating func sort()
+  public func sorted() -> zy_fpay_validacionfacial_lib_ios.HTTPHeaders
+  public func value(for name: Swift.String) -> Swift.String?
+  public subscript(name: Swift.String) -> Swift.String? {
+    get
+    set
+  }
+  public var dictionary: [Swift.String : Swift.String] {
+    get
+  }
+}
+extension zy_fpay_validacionfacial_lib_ios.HTTPHeaders : Swift.ExpressibleByDictionaryLiteral {
+  public init(dictionaryLiteral elements: (Swift.String, Swift.String)...)
+  public typealias Key = Swift.String
+  public typealias Value = Swift.String
+}
+extension zy_fpay_validacionfacial_lib_ios.HTTPHeaders : Swift.ExpressibleByArrayLiteral {
+  public init(arrayLiteral elements: zy_fpay_validacionfacial_lib_ios.HTTPHeader...)
+  public typealias ArrayLiteralElement = zy_fpay_validacionfacial_lib_ios.HTTPHeader
+}
+extension zy_fpay_validacionfacial_lib_ios.HTTPHeaders : Swift.Sequence {
+  public func makeIterator() -> Swift.IndexingIterator<[zy_fpay_validacionfacial_lib_ios.HTTPHeader]>
+}
+extension zy_fpay_validacionfacial_lib_ios.HTTPHeaders : Swift.Collection {
+  public var startIndex: Swift.Int {
+    get
+  }
+  public var endIndex: Swift.Int {
+    get
+  }
+  public subscript(position: Swift.Int) -> zy_fpay_validacionfacial_lib_ios.HTTPHeader {
+    get
+  }
+  public func index(after i: Swift.Int) -> Swift.Int
+  public typealias Element = zy_fpay_validacionfacial_lib_ios.HTTPHeader
+  public typealias Index = Swift.Int
+  public typealias Indices = Swift.DefaultIndices<zy_fpay_validacionfacial_lib_ios.HTTPHeaders>
+  public typealias Iterator = Swift.IndexingIterator<[zy_fpay_validacionfacial_lib_ios.HTTPHeader]>
+  public typealias SubSequence = Swift.Slice<zy_fpay_validacionfacial_lib_ios.HTTPHeaders>
+}
+extension zy_fpay_validacionfacial_lib_ios.HTTPHeaders : Swift.CustomStringConvertible {
+  public var description: Swift.String {
+    get
+  }
+}
+public struct HTTPHeader : Swift.Hashable {
+  public let name: Swift.String
+  public let value: Swift.String
+  public init(name: Swift.String, value: Swift.String)
+  public func hash(into hasher: inout Swift.Hasher)
+  public static func == (a: zy_fpay_validacionfacial_lib_ios.HTTPHeader, b: zy_fpay_validacionfacial_lib_ios.HTTPHeader) -> Swift.Bool
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+extension zy_fpay_validacionfacial_lib_ios.HTTPHeader : Swift.CustomStringConvertible {
+  public var description: Swift.String {
+    get
+  }
+}
+extension zy_fpay_validacionfacial_lib_ios.HTTPHeader {
+  public static func accept(_ value: Swift.String) -> zy_fpay_validacionfacial_lib_ios.HTTPHeader
+  public static func acceptCharset(_ value: Swift.String) -> zy_fpay_validacionfacial_lib_ios.HTTPHeader
+  public static func acceptLanguage(_ value: Swift.String) -> zy_fpay_validacionfacial_lib_ios.HTTPHeader
+  public static func acceptEncoding(_ value: Swift.String) -> zy_fpay_validacionfacial_lib_ios.HTTPHeader
+  public static func authorization(username: Swift.String, password: Swift.String) -> zy_fpay_validacionfacial_lib_ios.HTTPHeader
+  public static func authorization(bearerToken: Swift.String) -> zy_fpay_validacionfacial_lib_ios.HTTPHeader
+  public static func authorization(_ value: Swift.String) -> zy_fpay_validacionfacial_lib_ios.HTTPHeader
+  public static func contentDisposition(_ value: Swift.String) -> zy_fpay_validacionfacial_lib_ios.HTTPHeader
+  public static func contentType(_ value: Swift.String) -> zy_fpay_validacionfacial_lib_ios.HTTPHeader
+  public static func userAgent(_ value: Swift.String) -> zy_fpay_validacionfacial_lib_ios.HTTPHeader
+}
+extension zy_fpay_validacionfacial_lib_ios.HTTPHeaders {
+  public static let `default`: zy_fpay_validacionfacial_lib_ios.HTTPHeaders
+}
+extension zy_fpay_validacionfacial_lib_ios.HTTPHeader {
+  public static let defaultAcceptEncoding: zy_fpay_validacionfacial_lib_ios.HTTPHeader
+  public static let defaultAcceptLanguage: zy_fpay_validacionfacial_lib_ios.HTTPHeader
+  public static let defaultUserAgent: zy_fpay_validacionfacial_lib_ios.HTTPHeader
+}
+extension Foundation.URLRequest {
+  public var headers: zy_fpay_validacionfacial_lib_ios.HTTPHeaders {
+    get
+    set
+  }
+}
+extension Foundation.HTTPURLResponse {
+  public var headers: zy_fpay_validacionfacial_lib_ios.HTTPHeaders {
+    get
+  }
+}
+extension Foundation.URLSessionConfiguration {
+  public var headers: zy_fpay_validacionfacial_lib_ios.HTTPHeaders {
+    get
+    set
+  }
+}
+public struct HTTPMethod : Swift.RawRepresentable, Swift.Equatable, Swift.Hashable {
+  public static let connect: zy_fpay_validacionfacial_lib_ios.HTTPMethod
+  public static let delete: zy_fpay_validacionfacial_lib_ios.HTTPMethod
+  public static let get: zy_fpay_validacionfacial_lib_ios.HTTPMethod
+  public static let head: zy_fpay_validacionfacial_lib_ios.HTTPMethod
+  public static let options: zy_fpay_validacionfacial_lib_ios.HTTPMethod
+  public static let patch: zy_fpay_validacionfacial_lib_ios.HTTPMethod
+  public static let post: zy_fpay_validacionfacial_lib_ios.HTTPMethod
+  public static let put: zy_fpay_validacionfacial_lib_ios.HTTPMethod
+  public static let trace: zy_fpay_validacionfacial_lib_ios.HTTPMethod
+  public let rawValue: Swift.String
+  public init(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+}
+open class MultipartFormData {
+  public static let encodingMemoryThreshold: Swift.UInt64
+  open var contentType: Swift.String {
+    get
+    set
+  }
+  public var contentLength: Swift.UInt64 {
+    get
+  }
+  final public let boundary: Swift.String
+  public init(fileManager: Foundation.FileManager = .default, boundary: Swift.String? = nil)
+  public func append(_ data: Foundation.Data, withName name: Swift.String, fileName: Swift.String? = nil, mimeType: Swift.String? = nil)
+  public func append(_ fileURL: Foundation.URL, withName name: Swift.String)
+  public func append(_ fileURL: Foundation.URL, withName name: Swift.String, fileName: Swift.String, mimeType: Swift.String)
+  public func append(_ stream: Foundation.InputStream, withLength length: Swift.UInt64, name: Swift.String, fileName: Swift.String, mimeType: Swift.String)
+  public func append(_ stream: Foundation.InputStream, withLength length: Swift.UInt64, headers: zy_fpay_validacionfacial_lib_ios.HTTPHeaders)
+  public func encode() throws -> Foundation.Data
+  public func writeEncodedData(to fileURL: Foundation.URL) throws
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers open class NetworkReachabilityManager {
+  public enum NetworkReachabilityStatus {
+    case unknown
+    case notReachable
+    case reachable(zy_fpay_validacionfacial_lib_ios.NetworkReachabilityManager.NetworkReachabilityStatus.ConnectionType)
+    public enum ConnectionType {
+      case ethernetOrWiFi
+      case cellular
+      public static func == (a: zy_fpay_validacionfacial_lib_ios.NetworkReachabilityManager.NetworkReachabilityStatus.ConnectionType, b: zy_fpay_validacionfacial_lib_ios.NetworkReachabilityManager.NetworkReachabilityStatus.ConnectionType) -> Swift.Bool
+      public func hash(into hasher: inout Swift.Hasher)
+      public var hashValue: Swift.Int {
+        get
+      }
+    }
+  }
+  public typealias Listener = (zy_fpay_validacionfacial_lib_ios.NetworkReachabilityManager.NetworkReachabilityStatus) -> Swift.Void
+  public static let `default`: zy_fpay_validacionfacial_lib_ios.NetworkReachabilityManager?
+  open var isReachable: Swift.Bool {
+    get
+  }
+  open var isReachableOnCellular: Swift.Bool {
+    get
+  }
+  open var isReachableOnEthernetOrWiFi: Swift.Bool {
+    get
+  }
+  final public let reachabilityQueue: Dispatch.DispatchQueue
+  open var flags: SystemConfiguration.SCNetworkReachabilityFlags? {
+    get
+  }
+  open var status: zy_fpay_validacionfacial_lib_ios.NetworkReachabilityManager.NetworkReachabilityStatus {
+    get
+  }
+  convenience public init?(host: Swift.String)
+  convenience public init?()
+  @objc deinit
+  @discardableResult
+  open func startListening(onQueue queue: Dispatch.DispatchQueue = .main, onUpdatePerforming listener: @escaping zy_fpay_validacionfacial_lib_ios.NetworkReachabilityManager.Listener) -> Swift.Bool
+  open func stopListening()
+}
+extension zy_fpay_validacionfacial_lib_ios.NetworkReachabilityManager.NetworkReachabilityStatus : Swift.Equatable {
+  public static func == (a: zy_fpay_validacionfacial_lib_ios.NetworkReachabilityManager.NetworkReachabilityStatus, b: zy_fpay_validacionfacial_lib_ios.NetworkReachabilityManager.NetworkReachabilityStatus) -> Swift.Bool
+}
+extension zy_fpay_validacionfacial_lib_ios.Request {
+  public static let didResumeNotification: Foundation.Notification.Name
+  public static let didSuspendNotification: Foundation.Notification.Name
+  public static let didCancelNotification: Foundation.Notification.Name
+  public static let didFinishNotification: Foundation.Notification.Name
+  public static let didResumeTaskNotification: Foundation.Notification.Name
+  public static let didSuspendTaskNotification: Foundation.Notification.Name
+  public static let didCancelTaskNotification: Foundation.Notification.Name
+  public static let didCompleteTaskNotification: Foundation.Notification.Name
+}
+extension Foundation.Notification {
+  public var request: zy_fpay_validacionfacial_lib_ios.Request? {
+    get
+  }
+}
+@_hasMissingDesignatedInitializers final public class AlamofireNotifications : zy_fpay_validacionfacial_lib_ios.EventMonitor {
+  final public func requestDidResume(_ request: zy_fpay_validacionfacial_lib_ios.Request)
+  final public func requestDidSuspend(_ request: zy_fpay_validacionfacial_lib_ios.Request)
+  final public func requestDidCancel(_ request: zy_fpay_validacionfacial_lib_ios.Request)
+  final public func requestDidFinish(_ request: zy_fpay_validacionfacial_lib_ios.Request)
+  final public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didResumeTask task: Foundation.URLSessionTask)
+  final public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didSuspendTask task: Foundation.URLSessionTask)
+  final public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didCancelTask task: Foundation.URLSessionTask)
+  final public func request(_ request: zy_fpay_validacionfacial_lib_ios.Request, didCompleteTask task: Foundation.URLSessionTask, with error: zy_fpay_validacionfacial_lib_ios.AFError?)
+  @objc deinit
+}
+public protocol ParameterEncoder {
+  func encode<Parameters>(_ parameters: Parameters?, into request: Foundation.URLRequest) throws -> Foundation.URLRequest where Parameters : Swift.Encodable
+}
+open class JSONParameterEncoder : zy_fpay_validacionfacial_lib_ios.ParameterEncoder {
+  public static var `default`: zy_fpay_validacionfacial_lib_ios.JSONParameterEncoder {
+    get
+  }
+  public static var prettyPrinted: zy_fpay_validacionfacial_lib_ios.JSONParameterEncoder {
+    get
+  }
+  @available(macOS 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
+  public static var sortedKeys: zy_fpay_validacionfacial_lib_ios.JSONParameterEncoder {
+    get
+  }
+  final public let encoder: Foundation.JSONEncoder
+  public init(encoder: Foundation.JSONEncoder = JSONEncoder())
+  open func encode<Parameters>(_ parameters: Parameters?, into request: Foundation.URLRequest) throws -> Foundation.URLRequest where Parameters : Swift.Encodable
+  @objc deinit
+}
+extension zy_fpay_validacionfacial_lib_ios.ParameterEncoder where Self == zy_fpay_validacionfacial_lib_ios.JSONParameterEncoder {
+  public static var json: zy_fpay_validacionfacial_lib_ios.JSONParameterEncoder {
+    get
+  }
+  public static func json(encoder: Foundation.JSONEncoder = JSONEncoder()) -> zy_fpay_validacionfacial_lib_ios.JSONParameterEncoder
+}
+open class URLEncodedFormParameterEncoder : zy_fpay_validacionfacial_lib_ios.ParameterEncoder {
+  public enum Destination {
+    case methodDependent
+    case queryString
+    case httpBody
+    public static func == (a: zy_fpay_validacionfacial_lib_ios.URLEncodedFormParameterEncoder.Destination, b: zy_fpay_validacionfacial_lib_ios.URLEncodedFormParameterEncoder.Destination) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  public static var `default`: zy_fpay_validacionfacial_lib_ios.URLEncodedFormParameterEncoder {
+    get
+  }
+  final public let encoder: zy_fpay_validacionfacial_lib_ios.URLEncodedFormEncoder
+  final public let destination: zy_fpay_validacionfacial_lib_ios.URLEncodedFormParameterEncoder.Destination
+  public init(encoder: zy_fpay_validacionfacial_lib_ios.URLEncodedFormEncoder = URLEncodedFormEncoder(), destination: zy_fpay_validacionfacial_lib_ios.URLEncodedFormParameterEncoder.Destination = .methodDependent)
+  open func encode<Parameters>(_ parameters: Parameters?, into request: Foundation.URLRequest) throws -> Foundation.URLRequest where Parameters : Swift.Encodable
+  @objc deinit
+}
+extension zy_fpay_validacionfacial_lib_ios.ParameterEncoder where Self == zy_fpay_validacionfacial_lib_ios.URLEncodedFormParameterEncoder {
+  public static var urlEncodedForm: zy_fpay_validacionfacial_lib_ios.URLEncodedFormParameterEncoder {
+    get
+  }
+  public static func urlEncodedForm(encoder: zy_fpay_validacionfacial_lib_ios.URLEncodedFormEncoder = URLEncodedFormEncoder(), destination: zy_fpay_validacionfacial_lib_ios.URLEncodedFormParameterEncoder.Destination = .methodDependent) -> zy_fpay_validacionfacial_lib_ios.URLEncodedFormParameterEncoder
+}
+public typealias Parameters = [Swift.String : Any]
+public protocol ParameterEncoding {
+  func encode(_ urlRequest: zy_fpay_validacionfacial_lib_ios.URLRequestConvertible, with parameters: zy_fpay_validacionfacial_lib_ios.Parameters?) throws -> Foundation.URLRequest
+}
+public struct URLEncoding : zy_fpay_validacionfacial_lib_ios.ParameterEncoding {
+  public enum Destination {
+    case methodDependent
+    case queryString
+    case httpBody
+    public static func == (a: zy_fpay_validacionfacial_lib_ios.URLEncoding.Destination, b: zy_fpay_validacionfacial_lib_ios.URLEncoding.Destination) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  public enum ArrayEncoding {
+    case brackets
+    case noBrackets
+    case indexInBrackets
+    public static func == (a: zy_fpay_validacionfacial_lib_ios.URLEncoding.ArrayEncoding, b: zy_fpay_validacionfacial_lib_ios.URLEncoding.ArrayEncoding) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  public enum BoolEncoding {
+    case numeric
+    case literal
+    public static func == (a: zy_fpay_validacionfacial_lib_ios.URLEncoding.BoolEncoding, b: zy_fpay_validacionfacial_lib_ios.URLEncoding.BoolEncoding) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  public static var `default`: zy_fpay_validacionfacial_lib_ios.URLEncoding {
+    get
+  }
+  public static var queryString: zy_fpay_validacionfacial_lib_ios.URLEncoding {
+    get
+  }
+  public static var httpBody: zy_fpay_validacionfacial_lib_ios.URLEncoding {
+    get
+  }
+  public let destination: zy_fpay_validacionfacial_lib_ios.URLEncoding.Destination
+  public let arrayEncoding: zy_fpay_validacionfacial_lib_ios.URLEncoding.ArrayEncoding
+  public let boolEncoding: zy_fpay_validacionfacial_lib_ios.URLEncoding.BoolEncoding
+  public init(destination: zy_fpay_validacionfacial_lib_ios.URLEncoding.Destination = .methodDependent, arrayEncoding: zy_fpay_validacionfacial_lib_ios.URLEncoding.ArrayEncoding = .brackets, boolEncoding: zy_fpay_validacionfacial_lib_ios.URLEncoding.BoolEncoding = .numeric)
+  public func encode(_ urlRequest: zy_fpay_validacionfacial_lib_ios.URLRequestConvertible, with parameters: zy_fpay_validacionfacial_lib_ios.Parameters?) throws -> Foundation.URLRequest
+  public func queryComponents(fromKey key: Swift.String, value: Any) -> [(Swift.String, Swift.String)]
+  public func escape(_ string: Swift.String) -> Swift.String
+}
+public struct JSONEncoding : zy_fpay_validacionfacial_lib_ios.ParameterEncoding {
+  public static var `default`: zy_fpay_validacionfacial_lib_ios.JSONEncoding {
+    get
+  }
+  public static var prettyPrinted: zy_fpay_validacionfacial_lib_ios.JSONEncoding {
+    get
+  }
+  public let options: Foundation.JSONSerialization.WritingOptions
+  public init(options: Foundation.JSONSerialization.WritingOptions = [])
+  public func encode(_ urlRequest: zy_fpay_validacionfacial_lib_ios.URLRequestConvertible, with parameters: zy_fpay_validacionfacial_lib_ios.Parameters?) throws -> Foundation.URLRequest
+  public func encode(_ urlRequest: zy_fpay_validacionfacial_lib_ios.URLRequestConvertible, withJSONObject jsonObject: Any? = nil) throws -> Foundation.URLRequest
+}
+public protocol RedirectHandler {
+  func task(_ task: Foundation.URLSessionTask, willBeRedirectedTo request: Foundation.URLRequest, for response: Foundation.HTTPURLResponse, completion: @escaping (Foundation.URLRequest?) -> Swift.Void)
+}
+public struct Redirector {
+  public enum Behavior {
+    case follow
+    case doNotFollow
+    case modify((Foundation.URLSessionTask, Foundation.URLRequest, Foundation.HTTPURLResponse) -> Foundation.URLRequest?)
+  }
+  public static let follow: zy_fpay_validacionfacial_lib_ios.Redirector
+  public static let doNotFollow: zy_fpay_validacionfacial_lib_ios.Redirector
+  public let behavior: zy_fpay_validacionfacial_lib_ios.Redirector.Behavior
+  public init(behavior: zy_fpay_validacionfacial_lib_ios.Redirector.Behavior)
+}
+extension zy_fpay_validacionfacial_lib_ios.Redirector : zy_fpay_validacionfacial_lib_ios.RedirectHandler {
+  public func task(_ task: Foundation.URLSessionTask, willBeRedirectedTo request: Foundation.URLRequest, for response: Foundation.HTTPURLResponse, completion: @escaping (Foundation.URLRequest?) -> Swift.Void)
+}
+extension zy_fpay_validacionfacial_lib_ios.RedirectHandler where Self == zy_fpay_validacionfacial_lib_ios.Redirector {
+  public static var follow: zy_fpay_validacionfacial_lib_ios.Redirector {
+    get
+  }
+  public static var doNotFollow: zy_fpay_validacionfacial_lib_ios.Redirector {
+    get
+  }
+  public static func modify(using closure: @escaping (Foundation.URLSessionTask, Foundation.URLRequest, Foundation.HTTPURLResponse) -> Foundation.URLRequest?) -> zy_fpay_validacionfacial_lib_ios.Redirector
+}
+@_hasMissingDesignatedInitializers public class Request {
+  public enum State {
+    case initialized
+    case resumed
+    case suspended
+    case cancelled
+    case finished
+    public static func == (a: zy_fpay_validacionfacial_lib_ios.Request.State, b: zy_fpay_validacionfacial_lib_ios.Request.State) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  final public let id: Foundation.UUID
+  final public let underlyingQueue: Dispatch.DispatchQueue
+  final public let serializationQueue: Dispatch.DispatchQueue
+  final public let eventMonitor: zy_fpay_validacionfacial_lib_ios.EventMonitor?
+  final public let interceptor: zy_fpay_validacionfacial_lib_ios.RequestInterceptor?
+  weak public var delegate: zy_fpay_validacionfacial_lib_ios.RequestDelegate? {
+    get
+  }
+  public var state: zy_fpay_validacionfacial_lib_ios.Request.State {
+    get
+  }
+  public var isInitialized: Swift.Bool {
+    get
+  }
+  public var isResumed: Swift.Bool {
+    get
+  }
+  public var isSuspended: Swift.Bool {
+    get
+  }
+  public var isCancelled: Swift.Bool {
+    get
+  }
+  public var isFinished: Swift.Bool {
+    get
+  }
+  public typealias ProgressHandler = (Foundation.Progress) -> Swift.Void
+  final public let uploadProgress: Foundation.Progress
+  final public let downloadProgress: Foundation.Progress
+  public var redirectHandler: zy_fpay_validacionfacial_lib_ios.RedirectHandler? {
+    get
+  }
+  public var cachedResponseHandler: zy_fpay_validacionfacial_lib_ios.CachedResponseHandler? {
+    get
+  }
+  public var credential: Foundation.URLCredential? {
+    get
+  }
+  public var requests: [Foundation.URLRequest] {
+    get
+  }
+  public var firstRequest: Foundation.URLRequest? {
+    get
+  }
+  public var lastRequest: Foundation.URLRequest? {
+    get
+  }
+  public var request: Foundation.URLRequest? {
+    get
+  }
+  public var performedRequests: [Foundation.URLRequest] {
+    get
+  }
+  public var response: Foundation.HTTPURLResponse? {
+    get
+  }
+  public var tasks: [Foundation.URLSessionTask] {
+    get
+  }
+  public var firstTask: Foundation.URLSessionTask? {
+    get
+  }
+  public var lastTask: Foundation.URLSessionTask? {
+    get
+  }
+  public var task: Foundation.URLSessionTask? {
+    get
+  }
+  public var allMetrics: [Foundation.URLSessionTaskMetrics] {
+    get
+  }
+  public var firstMetrics: Foundation.URLSessionTaskMetrics? {
+    get
+  }
+  public var lastMetrics: Foundation.URLSessionTaskMetrics? {
+    get
+  }
+  public var metrics: Foundation.URLSessionTaskMetrics? {
+    get
+  }
+  public var retryCount: Swift.Int {
+    get
+  }
+  public var error: zy_fpay_validacionfacial_lib_ios.AFError? {
+    get
+  }
+  @discardableResult
+  public func cancel() -> Self
+  @discardableResult
+  public func suspend() -> Self
+  @discardableResult
+  public func resume() -> Self
+  @discardableResult
+  public func authenticate(username: Swift.String, password: Swift.String, persistence: Foundation.URLCredential.Persistence = .forSession) -> Self
+  @discardableResult
+  public func authenticate(with credential: Foundation.URLCredential) -> Self
+  @discardableResult
+  public func downloadProgress(queue: Dispatch.DispatchQueue = .main, closure: @escaping zy_fpay_validacionfacial_lib_ios.Request.ProgressHandler) -> Self
+  @discardableResult
+  public func uploadProgress(queue: Dispatch.DispatchQueue = .main, closure: @escaping zy_fpay_validacionfacial_lib_ios.Request.ProgressHandler) -> Self
+  @discardableResult
+  public func redirect(using handler: zy_fpay_validacionfacial_lib_ios.RedirectHandler) -> Self
+  @discardableResult
+  public func cacheResponse(using handler: zy_fpay_validacionfacial_lib_ios.CachedResponseHandler) -> Self
+  @discardableResult
+  public func cURLDescription(on queue: Dispatch.DispatchQueue, calling handler: @escaping (Swift.String) -> Swift.Void) -> Self
+  @discardableResult
+  public func cURLDescription(calling handler: @escaping (Swift.String) -> Swift.Void) -> Self
+  @discardableResult
+  public func onURLRequestCreation(on queue: Dispatch.DispatchQueue = .main, perform handler: @escaping (Foundation.URLRequest) -> Swift.Void) -> Self
+  @discardableResult
+  public func onURLSessionTaskCreation(on queue: Dispatch.DispatchQueue = .main, perform handler: @escaping (Foundation.URLSessionTask) -> Swift.Void) -> Self
+  @objc deinit
+}
+extension zy_fpay_validacionfacial_lib_ios.Request : Swift.Equatable {
+  public static func == (lhs: zy_fpay_validacionfacial_lib_ios.Request, rhs: zy_fpay_validacionfacial_lib_ios.Request) -> Swift.Bool
+}
+extension zy_fpay_validacionfacial_lib_ios.Request : Swift.Hashable {
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+extension zy_fpay_validacionfacial_lib_ios.Request : Swift.CustomStringConvertible {
+  public var description: Swift.String {
+    get
+  }
+}
+extension zy_fpay_validacionfacial_lib_ios.Request {
+  public func cURLDescription() -> Swift.String
+}
+public protocol RequestDelegate : AnyObject {
+  var sessionConfiguration: Foundation.URLSessionConfiguration { get }
+  var startImmediately: Swift.Bool { get }
+  func cleanup(after request: zy_fpay_validacionfacial_lib_ios.Request)
+  func retryResult(for request: zy_fpay_validacionfacial_lib_ios.Request, dueTo error: zy_fpay_validacionfacial_lib_ios.AFError, completion: @escaping (zy_fpay_validacionfacial_lib_ios.RetryResult) -> Swift.Void)
+  func retryRequest(_ request: zy_fpay_validacionfacial_lib_ios.Request, withDelay timeDelay: Foundation.TimeInterval?)
+}
+@_hasMissingDesignatedInitializers public class DataRequest : zy_fpay_validacionfacial_lib_ios.Request {
+  final public let convertible: zy_fpay_validacionfacial_lib_ios.URLRequestConvertible
+  public var data: Foundation.Data? {
+    get
+  }
+  @discardableResult
+  public func validate(_ validation: @escaping zy_fpay_validacionfacial_lib_ios.DataRequest.Validation) -> Self
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers final public class DataStreamRequest : zy_fpay_validacionfacial_lib_ios.Request {
+  public typealias Handler<Success, Failure> = (zy_fpay_validacionfacial_lib_ios.DataStreamRequest.Stream<Success, Failure>) throws -> Swift.Void where Failure : Swift.Error
+  public struct Stream<Success, Failure> where Failure : Swift.Error {
+    public let event: zy_fpay_validacionfacial_lib_ios.DataStreamRequest.Event<Success, Failure>
+    public let token: zy_fpay_validacionfacial_lib_ios.DataStreamRequest.CancellationToken
+    public func cancel()
+  }
+  public enum Event<Success, Failure> where Failure : Swift.Error {
+    case stream(Swift.Result<Success, Failure>)
+    case complete(zy_fpay_validacionfacial_lib_ios.DataStreamRequest.Completion)
+  }
+  public struct Completion {
+    public let request: Foundation.URLRequest?
+    public let response: Foundation.HTTPURLResponse?
+    public let metrics: Foundation.URLSessionTaskMetrics?
+    public let error: zy_fpay_validacionfacial_lib_ios.AFError?
+  }
+  public struct CancellationToken {
+    public func cancel()
+  }
+  final public let convertible: zy_fpay_validacionfacial_lib_ios.URLRequestConvertible
+  final public let automaticallyCancelOnStreamError: Swift.Bool
+  @discardableResult
+  final public func validate(_ validation: @escaping zy_fpay_validacionfacial_lib_ios.DataStreamRequest.Validation) -> Self
+  final public func asInputStream(bufferSize: Swift.Int = 1024) -> Foundation.InputStream?
+  @objc deinit
+}
+extension zy_fpay_validacionfacial_lib_ios.DataStreamRequest.Stream {
+  public var result: Swift.Result<Success, Failure>? {
+    get
+  }
+  public var value: Success? {
+    get
+  }
+  public var error: Failure? {
+    get
+  }
+  public var completion: zy_fpay_validacionfacial_lib_ios.DataStreamRequest.Completion? {
+    get
+  }
+}
+@_hasMissingDesignatedInitializers public class DownloadRequest : zy_fpay_validacionfacial_lib_ios.Request {
+  public struct Options : Swift.OptionSet {
+    public static let createIntermediateDirectories: zy_fpay_validacionfacial_lib_ios.DownloadRequest.Options
+    public static let removePreviousFile: zy_fpay_validacionfacial_lib_ios.DownloadRequest.Options
+    public let rawValue: Swift.Int
+    public init(rawValue: Swift.Int)
+    public typealias ArrayLiteralElement = zy_fpay_validacionfacial_lib_ios.DownloadRequest.Options
+    public typealias Element = zy_fpay_validacionfacial_lib_ios.DownloadRequest.Options
+    public typealias RawValue = Swift.Int
+  }
+  public typealias Destination = (_ temporaryURL: Foundation.URL, _ response: Foundation.HTTPURLResponse) -> (destinationURL: Foundation.URL, options: zy_fpay_validacionfacial_lib_ios.DownloadRequest.Options)
+  public class func suggestedDownloadDestination(for directory: Foundation.FileManager.SearchPathDirectory = .documentDirectory, in domain: Foundation.FileManager.SearchPathDomainMask = .userDomainMask, options: zy_fpay_validacionfacial_lib_ios.DownloadRequest.Options = []) -> zy_fpay_validacionfacial_lib_ios.DownloadRequest.Destination
+  public enum Downloadable {
+    case request(zy_fpay_validacionfacial_lib_ios.URLRequestConvertible)
+    case resumeData(Foundation.Data)
+  }
+  public var resumeData: Foundation.Data? {
+    get
+  }
+  public var fileURL: Foundation.URL? {
+    get
+  }
+  final public let downloadable: zy_fpay_validacionfacial_lib_ios.DownloadRequest.Downloadable
+  public func task(forResumeData data: Foundation.Data, using session: Foundation.URLSession) -> Foundation.URLSessionTask
+  @discardableResult
+  override public func cancel() -> Self
+  @discardableResult
+  public func cancel(producingResumeData shouldProduceResumeData: Swift.Bool) -> Self
+  @discardableResult
+  public func cancel(byProducingResumeData completionHandler: @escaping (_ data: Foundation.Data?) -> Swift.Void) -> Self
+  @discardableResult
+  public func validate(_ validation: @escaping zy_fpay_validacionfacial_lib_ios.DownloadRequest.Validation) -> Self
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers public class UploadRequest : zy_fpay_validacionfacial_lib_ios.DataRequest {
+  public enum Uploadable {
+    case data(Foundation.Data)
+    case file(Foundation.URL, shouldRemove: Swift.Bool)
+    case stream(Foundation.InputStream)
+  }
+  final public let upload: zy_fpay_validacionfacial_lib_ios.UploadableConvertible
+  final public let fileManager: Foundation.FileManager
+  public var uploadable: zy_fpay_validacionfacial_lib_ios.UploadRequest.Uploadable?
+  public func cleanup()
+  @objc deinit
+}
+public protocol UploadableConvertible {
+  func createUploadable() throws -> zy_fpay_validacionfacial_lib_ios.UploadRequest.Uploadable
+}
+extension zy_fpay_validacionfacial_lib_ios.UploadRequest.Uploadable : zy_fpay_validacionfacial_lib_ios.UploadableConvertible {
+  public func createUploadable() throws -> zy_fpay_validacionfacial_lib_ios.UploadRequest.Uploadable
+}
+public protocol UploadConvertible : zy_fpay_validacionfacial_lib_ios.URLRequestConvertible, zy_fpay_validacionfacial_lib_ios.UploadableConvertible {
+}
+public struct RequestAdapterState {
+  public let requestID: Foundation.UUID
+  public let session: zy_fpay_validacionfacial_lib_ios.Session
+}
+public protocol RequestAdapter {
+  func adapt(_ urlRequest: Foundation.URLRequest, for session: zy_fpay_validacionfacial_lib_ios.Session, completion: @escaping (Swift.Result<Foundation.URLRequest, Swift.Error>) -> Swift.Void)
+  func adapt(_ urlRequest: Foundation.URLRequest, using state: zy_fpay_validacionfacial_lib_ios.RequestAdapterState, completion: @escaping (Swift.Result<Foundation.URLRequest, Swift.Error>) -> Swift.Void)
+}
+extension zy_fpay_validacionfacial_lib_ios.RequestAdapter {
+  public func adapt(_ urlRequest: Foundation.URLRequest, using state: zy_fpay_validacionfacial_lib_ios.RequestAdapterState, completion: @escaping (Swift.Result<Foundation.URLRequest, Swift.Error>) -> Swift.Void)
+}
+public enum RetryResult {
+  case retry
+  case retryWithDelay(Foundation.TimeInterval)
+  case doNotRetry
+  case doNotRetryWithError(Swift.Error)
+}
+public protocol RequestRetrier {
+  func retry(_ request: zy_fpay_validacionfacial_lib_ios.Request, for session: zy_fpay_validacionfacial_lib_ios.Session, dueTo error: Swift.Error, completion: @escaping (zy_fpay_validacionfacial_lib_ios.RetryResult) -> Swift.Void)
+}
+public protocol RequestInterceptor : zy_fpay_validacionfacial_lib_ios.RequestAdapter, zy_fpay_validacionfacial_lib_ios.RequestRetrier {
+}
+extension zy_fpay_validacionfacial_lib_ios.RequestInterceptor {
+  public func adapt(_ urlRequest: Foundation.URLRequest, for session: zy_fpay_validacionfacial_lib_ios.Session, completion: @escaping (Swift.Result<Foundation.URLRequest, Swift.Error>) -> Swift.Void)
+  public func retry(_ request: zy_fpay_validacionfacial_lib_ios.Request, for session: zy_fpay_validacionfacial_lib_ios.Session, dueTo error: Swift.Error, completion: @escaping (zy_fpay_validacionfacial_lib_ios.RetryResult) -> Swift.Void)
+}
+public typealias AdaptHandler = (Foundation.URLRequest, zy_fpay_validacionfacial_lib_ios.Session, _ completion: @escaping (Swift.Result<Foundation.URLRequest, Swift.Error>) -> Swift.Void) -> Swift.Void
+public typealias RetryHandler = (zy_fpay_validacionfacial_lib_ios.Request, zy_fpay_validacionfacial_lib_ios.Session, Swift.Error, _ completion: @escaping (zy_fpay_validacionfacial_lib_ios.RetryResult) -> Swift.Void) -> Swift.Void
+open class Adapter : zy_fpay_validacionfacial_lib_ios.RequestInterceptor {
+  public init(_ adaptHandler: @escaping zy_fpay_validacionfacial_lib_ios.AdaptHandler)
+  open func adapt(_ urlRequest: Foundation.URLRequest, for session: zy_fpay_validacionfacial_lib_ios.Session, completion: @escaping (Swift.Result<Foundation.URLRequest, Swift.Error>) -> Swift.Void)
+  open func adapt(_ urlRequest: Foundation.URLRequest, using state: zy_fpay_validacionfacial_lib_ios.RequestAdapterState, completion: @escaping (Swift.Result<Foundation.URLRequest, Swift.Error>) -> Swift.Void)
+  @objc deinit
+}
+extension zy_fpay_validacionfacial_lib_ios.RequestAdapter where Self == zy_fpay_validacionfacial_lib_ios.Adapter {
+  public static func adapter(using closure: @escaping zy_fpay_validacionfacial_lib_ios.AdaptHandler) -> zy_fpay_validacionfacial_lib_ios.Adapter
+}
+open class Retrier : zy_fpay_validacionfacial_lib_ios.RequestInterceptor {
+  public init(_ retryHandler: @escaping zy_fpay_validacionfacial_lib_ios.RetryHandler)
+  open func retry(_ request: zy_fpay_validacionfacial_lib_ios.Request, for session: zy_fpay_validacionfacial_lib_ios.Session, dueTo error: Swift.Error, completion: @escaping (zy_fpay_validacionfacial_lib_ios.RetryResult) -> Swift.Void)
+  @objc deinit
+}
+extension zy_fpay_validacionfacial_lib_ios.RequestRetrier where Self == zy_fpay_validacionfacial_lib_ios.Retrier {
+  public static func retrier(using closure: @escaping zy_fpay_validacionfacial_lib_ios.RetryHandler) -> zy_fpay_validacionfacial_lib_ios.Retrier
+}
+open class Interceptor : zy_fpay_validacionfacial_lib_ios.RequestInterceptor {
+  final public let adapters: [zy_fpay_validacionfacial_lib_ios.RequestAdapter]
+  final public let retriers: [zy_fpay_validacionfacial_lib_ios.RequestRetrier]
+  public init(adaptHandler: @escaping zy_fpay_validacionfacial_lib_ios.AdaptHandler, retryHandler: @escaping zy_fpay_validacionfacial_lib_ios.RetryHandler)
+  public init(adapter: zy_fpay_validacionfacial_lib_ios.RequestAdapter, retrier: zy_fpay_validacionfacial_lib_ios.RequestRetrier)
+  public init(adapters: [zy_fpay_validacionfacial_lib_ios.RequestAdapter] = [], retriers: [zy_fpay_validacionfacial_lib_ios.RequestRetrier] = [], interceptors: [zy_fpay_validacionfacial_lib_ios.RequestInterceptor] = [])
+  open func adapt(_ urlRequest: Foundation.URLRequest, for session: zy_fpay_validacionfacial_lib_ios.Session, completion: @escaping (Swift.Result<Foundation.URLRequest, Swift.Error>) -> Swift.Void)
+  open func adapt(_ urlRequest: Foundation.URLRequest, using state: zy_fpay_validacionfacial_lib_ios.RequestAdapterState, completion: @escaping (Swift.Result<Foundation.URLRequest, Swift.Error>) -> Swift.Void)
+  open func retry(_ request: zy_fpay_validacionfacial_lib_ios.Request, for session: zy_fpay_validacionfacial_lib_ios.Session, dueTo error: Swift.Error, completion: @escaping (zy_fpay_validacionfacial_lib_ios.RetryResult) -> Swift.Void)
+  @objc deinit
+}
+extension zy_fpay_validacionfacial_lib_ios.RequestInterceptor where Self == zy_fpay_validacionfacial_lib_ios.Interceptor {
+  public static func interceptor(adapter: @escaping zy_fpay_validacionfacial_lib_ios.AdaptHandler, retrier: @escaping zy_fpay_validacionfacial_lib_ios.RetryHandler) -> zy_fpay_validacionfacial_lib_ios.Interceptor
+  public static func interceptor(adapter: zy_fpay_validacionfacial_lib_ios.RequestAdapter, retrier: zy_fpay_validacionfacial_lib_ios.RequestRetrier) -> zy_fpay_validacionfacial_lib_ios.Interceptor
+  public static func interceptor(adapters: [zy_fpay_validacionfacial_lib_ios.RequestAdapter] = [], retriers: [zy_fpay_validacionfacial_lib_ios.RequestRetrier] = [], interceptors: [zy_fpay_validacionfacial_lib_ios.RequestInterceptor] = []) -> zy_fpay_validacionfacial_lib_ios.Interceptor
+}
+public typealias AFDataResponse<Success> = zy_fpay_validacionfacial_lib_ios.DataResponse<Success, zy_fpay_validacionfacial_lib_ios.AFError>
+public typealias AFDownloadResponse<Success> = zy_fpay_validacionfacial_lib_ios.DownloadResponse<Success, zy_fpay_validacionfacial_lib_ios.AFError>
+public struct DataResponse<Success, Failure> where Failure : Swift.Error {
+  public let request: Foundation.URLRequest?
+  public let response: Foundation.HTTPURLResponse?
+  public let data: Foundation.Data?
+  public let metrics: Foundation.URLSessionTaskMetrics?
+  public let serializationDuration: Foundation.TimeInterval
+  public let result: Swift.Result<Success, Failure>
+  public var value: Success? {
+    get
+  }
+  public var error: Failure? {
+    get
+  }
+  public init(request: Foundation.URLRequest?, response: Foundation.HTTPURLResponse?, data: Foundation.Data?, metrics: Foundation.URLSessionTaskMetrics?, serializationDuration: Foundation.TimeInterval, result: Swift.Result<Success, Failure>)
+}
+extension zy_fpay_validacionfacial_lib_ios.DataResponse : Swift.CustomStringConvertible, Swift.CustomDebugStringConvertible {
+  public var description: Swift.String {
+    get
+  }
+  public var debugDescription: Swift.String {
+    get
+  }
+}
+extension zy_fpay_validacionfacial_lib_ios.DataResponse {
+  public func map<NewSuccess>(_ transform: (Success) -> NewSuccess) -> zy_fpay_validacionfacial_lib_ios.DataResponse<NewSuccess, Failure>
+  public func tryMap<NewSuccess>(_ transform: (Success) throws -> NewSuccess) -> zy_fpay_validacionfacial_lib_ios.DataResponse<NewSuccess, Swift.Error>
+  public func mapError<NewFailure>(_ transform: (Failure) -> NewFailure) -> zy_fpay_validacionfacial_lib_ios.DataResponse<Success, NewFailure> where NewFailure : Swift.Error
+  public func tryMapError<NewFailure>(_ transform: (Failure) throws -> NewFailure) -> zy_fpay_validacionfacial_lib_ios.DataResponse<Success, Swift.Error> where NewFailure : Swift.Error
+}
+public struct DownloadResponse<Success, Failure> where Failure : Swift.Error {
+  public let request: Foundation.URLRequest?
+  public let response: Foundation.HTTPURLResponse?
+  public let fileURL: Foundation.URL?
+  public let resumeData: Foundation.Data?
+  public let metrics: Foundation.URLSessionTaskMetrics?
+  public let serializationDuration: Foundation.TimeInterval
+  public let result: Swift.Result<Success, Failure>
+  public var value: Success? {
+    get
+  }
+  public var error: Failure? {
+    get
+  }
+  public init(request: Foundation.URLRequest?, response: Foundation.HTTPURLResponse?, fileURL: Foundation.URL?, resumeData: Foundation.Data?, metrics: Foundation.URLSessionTaskMetrics?, serializationDuration: Foundation.TimeInterval, result: Swift.Result<Success, Failure>)
+}
+extension zy_fpay_validacionfacial_lib_ios.DownloadResponse : Swift.CustomStringConvertible, Swift.CustomDebugStringConvertible {
+  public var description: Swift.String {
+    get
+  }
+  public var debugDescription: Swift.String {
+    get
+  }
+}
+extension zy_fpay_validacionfacial_lib_ios.DownloadResponse {
+  public func map<NewSuccess>(_ transform: (Success) -> NewSuccess) -> zy_fpay_validacionfacial_lib_ios.DownloadResponse<NewSuccess, Failure>
+  public func tryMap<NewSuccess>(_ transform: (Success) throws -> NewSuccess) -> zy_fpay_validacionfacial_lib_ios.DownloadResponse<NewSuccess, Swift.Error>
+  public func mapError<NewFailure>(_ transform: (Failure) -> NewFailure) -> zy_fpay_validacionfacial_lib_ios.DownloadResponse<Success, NewFailure> where NewFailure : Swift.Error
+  public func tryMapError<NewFailure>(_ transform: (Failure) throws -> NewFailure) -> zy_fpay_validacionfacial_lib_ios.DownloadResponse<Success, Swift.Error> where NewFailure : Swift.Error
+}
+public protocol DataResponseSerializerProtocol {
+  associatedtype SerializedObject
+  func serialize(request: Foundation.URLRequest?, response: Foundation.HTTPURLResponse?, data: Foundation.Data?, error: Swift.Error?) throws -> Self.SerializedObject
+}
+public protocol DownloadResponseSerializerProtocol {
+  associatedtype SerializedObject
+  func serializeDownload(request: Foundation.URLRequest?, response: Foundation.HTTPURLResponse?, fileURL: Foundation.URL?, error: Swift.Error?) throws -> Self.SerializedObject
+}
+public protocol ResponseSerializer : zy_fpay_validacionfacial_lib_ios.DataResponseSerializerProtocol, zy_fpay_validacionfacial_lib_ios.DownloadResponseSerializerProtocol {
+  var dataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor { get }
+  var emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> { get }
+  var emptyResponseCodes: Swift.Set<Swift.Int> { get }
+}
+public protocol DataPreprocessor {
+  func preprocess(_ data: Foundation.Data) throws -> Foundation.Data
+}
+public struct PassthroughPreprocessor : zy_fpay_validacionfacial_lib_ios.DataPreprocessor {
+  public init()
+  public func preprocess(_ data: Foundation.Data) throws -> Foundation.Data
+}
+public struct GoogleXSSIPreprocessor : zy_fpay_validacionfacial_lib_ios.DataPreprocessor {
+  public init()
+  public func preprocess(_ data: Foundation.Data) throws -> Foundation.Data
+}
+extension zy_fpay_validacionfacial_lib_ios.DataPreprocessor where Self == zy_fpay_validacionfacial_lib_ios.PassthroughPreprocessor {
+  public static var passthrough: zy_fpay_validacionfacial_lib_ios.PassthroughPreprocessor {
+    get
+  }
+}
+extension zy_fpay_validacionfacial_lib_ios.DataPreprocessor where Self == zy_fpay_validacionfacial_lib_ios.GoogleXSSIPreprocessor {
+  public static var googleXSSI: zy_fpay_validacionfacial_lib_ios.GoogleXSSIPreprocessor {
+    get
+  }
+}
+extension zy_fpay_validacionfacial_lib_ios.ResponseSerializer {
+  public static var defaultDataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor {
+    get
+  }
+  public static var defaultEmptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> {
+    get
+  }
+  public static var defaultEmptyResponseCodes: Swift.Set<Swift.Int> {
+    get
+  }
+  public var dataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor {
+    get
+  }
+  public var emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> {
+    get
+  }
+  public var emptyResponseCodes: Swift.Set<Swift.Int> {
+    get
+  }
+  public func requestAllowsEmptyResponseData(_ request: Foundation.URLRequest?) -> Swift.Bool?
+  public func responseAllowsEmptyResponseData(_ response: Foundation.HTTPURLResponse?) -> Swift.Bool?
+  public func emptyResponseAllowed(forRequest request: Foundation.URLRequest?, response: Foundation.HTTPURLResponse?) -> Swift.Bool
+}
+extension zy_fpay_validacionfacial_lib_ios.DownloadResponseSerializerProtocol where Self : zy_fpay_validacionfacial_lib_ios.DataResponseSerializerProtocol {
+  public func serializeDownload(request: Foundation.URLRequest?, response: Foundation.HTTPURLResponse?, fileURL: Foundation.URL?, error: Swift.Error?) throws -> Self.SerializedObject
+}
+extension zy_fpay_validacionfacial_lib_ios.DataRequest {
+  @discardableResult
+  public func response(queue: Dispatch.DispatchQueue = .main, completionHandler: @escaping (zy_fpay_validacionfacial_lib_ios.AFDataResponse<Foundation.Data?>) -> Swift.Void) -> Self
+  @discardableResult
+  public func response<Serializer>(queue: Dispatch.DispatchQueue = .main, responseSerializer: Serializer, completionHandler: @escaping (zy_fpay_validacionfacial_lib_ios.AFDataResponse<Serializer.SerializedObject>) -> Swift.Void) -> Self where Serializer : zy_fpay_validacionfacial_lib_ios.DataResponseSerializerProtocol
+  @discardableResult
+  public func response<Serializer>(queue: Dispatch.DispatchQueue = .main, responseSerializer: Serializer, completionHandler: @escaping (zy_fpay_validacionfacial_lib_ios.AFDataResponse<Serializer.SerializedObject>) -> Swift.Void) -> Self where Serializer : zy_fpay_validacionfacial_lib_ios.ResponseSerializer
+}
+extension zy_fpay_validacionfacial_lib_ios.DownloadRequest {
+  @discardableResult
+  public func response(queue: Dispatch.DispatchQueue = .main, completionHandler: @escaping (zy_fpay_validacionfacial_lib_ios.AFDownloadResponse<Foundation.URL?>) -> Swift.Void) -> Self
+  @discardableResult
+  public func response<Serializer>(queue: Dispatch.DispatchQueue = .main, responseSerializer: Serializer, completionHandler: @escaping (zy_fpay_validacionfacial_lib_ios.AFDownloadResponse<Serializer.SerializedObject>) -> Swift.Void) -> Self where Serializer : zy_fpay_validacionfacial_lib_ios.DownloadResponseSerializerProtocol
+  @discardableResult
+  public func response<Serializer>(queue: Dispatch.DispatchQueue = .main, responseSerializer: Serializer, completionHandler: @escaping (zy_fpay_validacionfacial_lib_ios.AFDownloadResponse<Serializer.SerializedObject>) -> Swift.Void) -> Self where Serializer : zy_fpay_validacionfacial_lib_ios.ResponseSerializer
+}
+public struct URLResponseSerializer : zy_fpay_validacionfacial_lib_ios.DownloadResponseSerializerProtocol {
+  public init()
+  public func serializeDownload(request: Foundation.URLRequest?, response: Foundation.HTTPURLResponse?, fileURL: Foundation.URL?, error: Swift.Error?) throws -> Foundation.URL
+  public typealias SerializedObject = Foundation.URL
+}
+extension zy_fpay_validacionfacial_lib_ios.DownloadResponseSerializerProtocol where Self == zy_fpay_validacionfacial_lib_ios.URLResponseSerializer {
+  public static var url: zy_fpay_validacionfacial_lib_ios.URLResponseSerializer {
+    get
+  }
+}
+extension zy_fpay_validacionfacial_lib_ios.DownloadRequest {
+  @discardableResult
+  public func responseURL(queue: Dispatch.DispatchQueue = .main, completionHandler: @escaping (zy_fpay_validacionfacial_lib_ios.AFDownloadResponse<Foundation.URL>) -> Swift.Void) -> Self
+}
+final public class DataResponseSerializer : zy_fpay_validacionfacial_lib_ios.ResponseSerializer {
+  final public let dataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor
+  final public let emptyResponseCodes: Swift.Set<Swift.Int>
+  final public let emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod>
+  public init(dataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = DataResponseSerializer.defaultDataPreprocessor, emptyResponseCodes: Swift.Set<Swift.Int> = DataResponseSerializer.defaultEmptyResponseCodes, emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = DataResponseSerializer.defaultEmptyRequestMethods)
+  final public func serialize(request: Foundation.URLRequest?, response: Foundation.HTTPURLResponse?, data: Foundation.Data?, error: Swift.Error?) throws -> Foundation.Data
+  public typealias SerializedObject = Foundation.Data
+  @objc deinit
+}
+extension zy_fpay_validacionfacial_lib_ios.ResponseSerializer where Self == zy_fpay_validacionfacial_lib_ios.DataResponseSerializer {
+  public static var data: zy_fpay_validacionfacial_lib_ios.DataResponseSerializer {
+    get
+  }
+  public static func data(dataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = DataResponseSerializer.defaultDataPreprocessor, emptyResponseCodes: Swift.Set<Swift.Int> = DataResponseSerializer.defaultEmptyResponseCodes, emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = DataResponseSerializer.defaultEmptyRequestMethods) -> zy_fpay_validacionfacial_lib_ios.DataResponseSerializer
+}
+extension zy_fpay_validacionfacial_lib_ios.DataRequest {
+  @discardableResult
+  public func responseData(queue: Dispatch.DispatchQueue = .main, dataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = DataResponseSerializer.defaultDataPreprocessor, emptyResponseCodes: Swift.Set<Swift.Int> = DataResponseSerializer.defaultEmptyResponseCodes, emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = DataResponseSerializer.defaultEmptyRequestMethods, completionHandler: @escaping (zy_fpay_validacionfacial_lib_ios.AFDataResponse<Foundation.Data>) -> Swift.Void) -> Self
+}
+extension zy_fpay_validacionfacial_lib_ios.DownloadRequest {
+  @discardableResult
+  public func responseData(queue: Dispatch.DispatchQueue = .main, dataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = DataResponseSerializer.defaultDataPreprocessor, emptyResponseCodes: Swift.Set<Swift.Int> = DataResponseSerializer.defaultEmptyResponseCodes, emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = DataResponseSerializer.defaultEmptyRequestMethods, completionHandler: @escaping (zy_fpay_validacionfacial_lib_ios.AFDownloadResponse<Foundation.Data>) -> Swift.Void) -> Self
+}
+final public class StringResponseSerializer : zy_fpay_validacionfacial_lib_ios.ResponseSerializer {
+  final public let dataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor
+  final public let encoding: Swift.String.Encoding?
+  final public let emptyResponseCodes: Swift.Set<Swift.Int>
+  final public let emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod>
+  public init(dataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = StringResponseSerializer.defaultDataPreprocessor, encoding: Swift.String.Encoding? = nil, emptyResponseCodes: Swift.Set<Swift.Int> = StringResponseSerializer.defaultEmptyResponseCodes, emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = StringResponseSerializer.defaultEmptyRequestMethods)
+  final public func serialize(request: Foundation.URLRequest?, response: Foundation.HTTPURLResponse?, data: Foundation.Data?, error: Swift.Error?) throws -> Swift.String
+  public typealias SerializedObject = Swift.String
+  @objc deinit
+}
+extension zy_fpay_validacionfacial_lib_ios.ResponseSerializer where Self == zy_fpay_validacionfacial_lib_ios.StringResponseSerializer {
+  public static var string: zy_fpay_validacionfacial_lib_ios.StringResponseSerializer {
+    get
+  }
+  public static func string(dataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = StringResponseSerializer.defaultDataPreprocessor, encoding: Swift.String.Encoding? = nil, emptyResponseCodes: Swift.Set<Swift.Int> = StringResponseSerializer.defaultEmptyResponseCodes, emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = StringResponseSerializer.defaultEmptyRequestMethods) -> zy_fpay_validacionfacial_lib_ios.StringResponseSerializer
+}
+extension zy_fpay_validacionfacial_lib_ios.DataRequest {
+  @discardableResult
+  public func responseString(queue: Dispatch.DispatchQueue = .main, dataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = StringResponseSerializer.defaultDataPreprocessor, encoding: Swift.String.Encoding? = nil, emptyResponseCodes: Swift.Set<Swift.Int> = StringResponseSerializer.defaultEmptyResponseCodes, emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = StringResponseSerializer.defaultEmptyRequestMethods, completionHandler: @escaping (zy_fpay_validacionfacial_lib_ios.AFDataResponse<Swift.String>) -> Swift.Void) -> Self
+}
+extension zy_fpay_validacionfacial_lib_ios.DownloadRequest {
+  @discardableResult
+  public func responseString(queue: Dispatch.DispatchQueue = .main, dataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = StringResponseSerializer.defaultDataPreprocessor, encoding: Swift.String.Encoding? = nil, emptyResponseCodes: Swift.Set<Swift.Int> = StringResponseSerializer.defaultEmptyResponseCodes, emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = StringResponseSerializer.defaultEmptyRequestMethods, completionHandler: @escaping (zy_fpay_validacionfacial_lib_ios.AFDownloadResponse<Swift.String>) -> Swift.Void) -> Self
+}
+@available(*, deprecated, message: "JSONResponseSerializer deprecated and will be removed in Alamofire 6. Use DecodableResponseSerializer instead.")
+final public class JSONResponseSerializer : zy_fpay_validacionfacial_lib_ios.ResponseSerializer {
+  final public let dataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor
+  final public let emptyResponseCodes: Swift.Set<Swift.Int>
+  final public let emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod>
+  final public let options: Foundation.JSONSerialization.ReadingOptions
+  public init(dataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = JSONResponseSerializer.defaultDataPreprocessor, emptyResponseCodes: Swift.Set<Swift.Int> = JSONResponseSerializer.defaultEmptyResponseCodes, emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = JSONResponseSerializer.defaultEmptyRequestMethods, options: Foundation.JSONSerialization.ReadingOptions = .allowFragments)
+  final public func serialize(request: Foundation.URLRequest?, response: Foundation.HTTPURLResponse?, data: Foundation.Data?, error: Swift.Error?) throws -> Any
+  public typealias SerializedObject = Any
+  @objc deinit
+}
+extension zy_fpay_validacionfacial_lib_ios.DataRequest {
+  @available(*, deprecated, message: "responseJSON deprecated and will be removed in Alamofire 6. Use responseDecodable instead.")
+  @discardableResult
+  public func responseJSON(queue: Dispatch.DispatchQueue = .main, dataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = JSONResponseSerializer.defaultDataPreprocessor, emptyResponseCodes: Swift.Set<Swift.Int> = JSONResponseSerializer.defaultEmptyResponseCodes, emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = JSONResponseSerializer.defaultEmptyRequestMethods, options: Foundation.JSONSerialization.ReadingOptions = .allowFragments, completionHandler: @escaping (zy_fpay_validacionfacial_lib_ios.AFDataResponse<Any>) -> Swift.Void) -> Self
+}
+extension zy_fpay_validacionfacial_lib_ios.DownloadRequest {
+  @available(*, deprecated, message: "responseJSON deprecated and will be removed in Alamofire 6. Use responseDecodable instead.")
+  @discardableResult
+  public func responseJSON(queue: Dispatch.DispatchQueue = .main, dataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = JSONResponseSerializer.defaultDataPreprocessor, emptyResponseCodes: Swift.Set<Swift.Int> = JSONResponseSerializer.defaultEmptyResponseCodes, emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = JSONResponseSerializer.defaultEmptyRequestMethods, options: Foundation.JSONSerialization.ReadingOptions = .allowFragments, completionHandler: @escaping (zy_fpay_validacionfacial_lib_ios.AFDownloadResponse<Any>) -> Swift.Void) -> Self
+}
+public protocol EmptyResponse {
+  static func emptyValue() -> Self
+}
+public struct Empty : Swift.Codable {
+  public static let value: zy_fpay_validacionfacial_lib_ios.Empty
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+extension zy_fpay_validacionfacial_lib_ios.Empty : zy_fpay_validacionfacial_lib_ios.EmptyResponse {
+  public static func emptyValue() -> zy_fpay_validacionfacial_lib_ios.Empty
+}
+public protocol DataDecoder {
+  func decode<D>(_ type: D.Type, from data: Foundation.Data) throws -> D where D : Swift.Decodable
+}
+extension Foundation.JSONDecoder : zy_fpay_validacionfacial_lib_ios.DataDecoder {
+}
+extension Foundation.PropertyListDecoder : zy_fpay_validacionfacial_lib_ios.DataDecoder {
+}
+final public class DecodableResponseSerializer<T> : zy_fpay_validacionfacial_lib_ios.ResponseSerializer where T : Swift.Decodable {
+  final public let dataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor
+  final public let decoder: zy_fpay_validacionfacial_lib_ios.DataDecoder
+  final public let emptyResponseCodes: Swift.Set<Swift.Int>
+  final public let emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod>
+  public init(dataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = DecodableResponseSerializer.defaultDataPreprocessor, decoder: zy_fpay_validacionfacial_lib_ios.DataDecoder = JSONDecoder(), emptyResponseCodes: Swift.Set<Swift.Int> = DecodableResponseSerializer.defaultEmptyResponseCodes, emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = DecodableResponseSerializer.defaultEmptyRequestMethods)
+  final public func serialize(request: Foundation.URLRequest?, response: Foundation.HTTPURLResponse?, data: Foundation.Data?, error: Swift.Error?) throws -> T
+  public typealias SerializedObject = T
+  @objc deinit
+}
+extension zy_fpay_validacionfacial_lib_ios.ResponseSerializer {
+  public static func decodable<T>(of type: T.Type, dataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = DecodableResponseSerializer<T>.defaultDataPreprocessor, decoder: zy_fpay_validacionfacial_lib_ios.DataDecoder = JSONDecoder(), emptyResponseCodes: Swift.Set<Swift.Int> = DecodableResponseSerializer<T>.defaultEmptyResponseCodes, emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = DecodableResponseSerializer<T>.defaultEmptyRequestMethods) -> zy_fpay_validacionfacial_lib_ios.DecodableResponseSerializer<T> where Self == zy_fpay_validacionfacial_lib_ios.DecodableResponseSerializer<T>, T : Swift.Decodable
+}
+extension zy_fpay_validacionfacial_lib_ios.DataRequest {
+  @discardableResult
+  public func responseDecodable<T>(of type: T.Type = T.self, queue: Dispatch.DispatchQueue = .main, dataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = DecodableResponseSerializer<T>.defaultDataPreprocessor, decoder: zy_fpay_validacionfacial_lib_ios.DataDecoder = JSONDecoder(), emptyResponseCodes: Swift.Set<Swift.Int> = DecodableResponseSerializer<T>.defaultEmptyResponseCodes, emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = DecodableResponseSerializer<T>.defaultEmptyRequestMethods, completionHandler: @escaping (zy_fpay_validacionfacial_lib_ios.AFDataResponse<T>) -> Swift.Void) -> Self where T : Swift.Decodable
+}
+extension zy_fpay_validacionfacial_lib_ios.DownloadRequest {
+  @discardableResult
+  public func responseDecodable<T>(of type: T.Type = T.self, queue: Dispatch.DispatchQueue = .main, dataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = DecodableResponseSerializer<T>.defaultDataPreprocessor, decoder: zy_fpay_validacionfacial_lib_ios.DataDecoder = JSONDecoder(), emptyResponseCodes: Swift.Set<Swift.Int> = DecodableResponseSerializer<T>.defaultEmptyResponseCodes, emptyRequestMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = DecodableResponseSerializer<T>.defaultEmptyRequestMethods, completionHandler: @escaping (zy_fpay_validacionfacial_lib_ios.AFDownloadResponse<T>) -> Swift.Void) -> Self where T : Swift.Decodable
+}
+public protocol DataStreamSerializer {
+  associatedtype SerializedObject
+  func serialize(_ data: Foundation.Data) throws -> Self.SerializedObject
+}
+public struct DecodableStreamSerializer<T> : zy_fpay_validacionfacial_lib_ios.DataStreamSerializer where T : Swift.Decodable {
+  public let decoder: zy_fpay_validacionfacial_lib_ios.DataDecoder
+  public let dataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor
+  public init(decoder: zy_fpay_validacionfacial_lib_ios.DataDecoder = JSONDecoder(), dataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = PassthroughPreprocessor())
+  public func serialize(_ data: Foundation.Data) throws -> T
+  public typealias SerializedObject = T
+}
+public struct PassthroughStreamSerializer : zy_fpay_validacionfacial_lib_ios.DataStreamSerializer {
+  public init()
+  public func serialize(_ data: Foundation.Data) throws -> Foundation.Data
+  public typealias SerializedObject = Foundation.Data
+}
+public struct StringStreamSerializer : zy_fpay_validacionfacial_lib_ios.DataStreamSerializer {
+  public init()
+  public func serialize(_ data: Foundation.Data) throws -> Swift.String
+  public typealias SerializedObject = Swift.String
+}
+extension zy_fpay_validacionfacial_lib_ios.DataStreamSerializer {
+  public static func decodable<T>(of type: T.Type, decoder: zy_fpay_validacionfacial_lib_ios.DataDecoder = JSONDecoder(), dataPreprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = PassthroughPreprocessor()) -> Self where Self == zy_fpay_validacionfacial_lib_ios.DecodableStreamSerializer<T>, T : Swift.Decodable
+}
+extension zy_fpay_validacionfacial_lib_ios.DataStreamSerializer where Self == zy_fpay_validacionfacial_lib_ios.PassthroughStreamSerializer {
+  public static var passthrough: zy_fpay_validacionfacial_lib_ios.PassthroughStreamSerializer {
+    get
+  }
+}
+extension zy_fpay_validacionfacial_lib_ios.DataStreamSerializer where Self == zy_fpay_validacionfacial_lib_ios.StringStreamSerializer {
+  public static var string: zy_fpay_validacionfacial_lib_ios.StringStreamSerializer {
+    get
+  }
+}
+extension zy_fpay_validacionfacial_lib_ios.DataStreamRequest {
+  @discardableResult
+  final public func responseStream(on queue: Dispatch.DispatchQueue = .main, stream: @escaping zy_fpay_validacionfacial_lib_ios.DataStreamRequest.Handler<Foundation.Data, Swift.Never>) -> Self
+  @discardableResult
+  final public func responseStream<Serializer>(using serializer: Serializer, on queue: Dispatch.DispatchQueue = .main, stream: @escaping zy_fpay_validacionfacial_lib_ios.DataStreamRequest.Handler<Serializer.SerializedObject, zy_fpay_validacionfacial_lib_ios.AFError>) -> Self where Serializer : zy_fpay_validacionfacial_lib_ios.DataStreamSerializer
+  @discardableResult
+  final public func responseStreamString(on queue: Dispatch.DispatchQueue = .main, stream: @escaping zy_fpay_validacionfacial_lib_ios.DataStreamRequest.Handler<Swift.String, Swift.Never>) -> Self
+  @discardableResult
+  final public func responseStreamDecodable<T>(of type: T.Type = T.self, on queue: Dispatch.DispatchQueue = .main, using decoder: zy_fpay_validacionfacial_lib_ios.DataDecoder = JSONDecoder(), preprocessor: zy_fpay_validacionfacial_lib_ios.DataPreprocessor = PassthroughPreprocessor(), stream: @escaping zy_fpay_validacionfacial_lib_ios.DataStreamRequest.Handler<T, zy_fpay_validacionfacial_lib_ios.AFError>) -> Self where T : Swift.Decodable
+}
+public typealias AFResult<Success> = Swift.Result<Success, zy_fpay_validacionfacial_lib_ios.AFError>
+open class RetryPolicy : zy_fpay_validacionfacial_lib_ios.RequestInterceptor {
+  public static let defaultRetryLimit: Swift.UInt
+  public static let defaultExponentialBackoffBase: Swift.UInt
+  public static let defaultExponentialBackoffScale: Swift.Double
+  public static let defaultRetryableHTTPMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod>
+  public static let defaultRetryableHTTPStatusCodes: Swift.Set<Swift.Int>
+  public static let defaultRetryableURLErrorCodes: Swift.Set<Foundation.URLError.Code>
+  final public let retryLimit: Swift.UInt
+  final public let exponentialBackoffBase: Swift.UInt
+  final public let exponentialBackoffScale: Swift.Double
+  final public let retryableHTTPMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod>
+  final public let retryableHTTPStatusCodes: Swift.Set<Swift.Int>
+  final public let retryableURLErrorCodes: Swift.Set<Foundation.URLError.Code>
+  public init(retryLimit: Swift.UInt = RetryPolicy.defaultRetryLimit, exponentialBackoffBase: Swift.UInt = RetryPolicy.defaultExponentialBackoffBase, exponentialBackoffScale: Swift.Double = RetryPolicy.defaultExponentialBackoffScale, retryableHTTPMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = RetryPolicy.defaultRetryableHTTPMethods, retryableHTTPStatusCodes: Swift.Set<Swift.Int> = RetryPolicy.defaultRetryableHTTPStatusCodes, retryableURLErrorCodes: Swift.Set<Foundation.URLError.Code> = RetryPolicy.defaultRetryableURLErrorCodes)
+  open func retry(_ request: zy_fpay_validacionfacial_lib_ios.Request, for session: zy_fpay_validacionfacial_lib_ios.Session, dueTo error: Swift.Error, completion: @escaping (zy_fpay_validacionfacial_lib_ios.RetryResult) -> Swift.Void)
+  open func shouldRetry(request: zy_fpay_validacionfacial_lib_ios.Request, dueTo error: Swift.Error) -> Swift.Bool
+  @objc deinit
+}
+extension zy_fpay_validacionfacial_lib_ios.RequestInterceptor where Self == zy_fpay_validacionfacial_lib_ios.RetryPolicy {
+  public static var retryPolicy: zy_fpay_validacionfacial_lib_ios.RetryPolicy {
+    get
+  }
+  public static func retryPolicy(retryLimit: Swift.UInt = RetryPolicy.defaultRetryLimit, exponentialBackoffBase: Swift.UInt = RetryPolicy.defaultExponentialBackoffBase, exponentialBackoffScale: Swift.Double = RetryPolicy.defaultExponentialBackoffScale, retryableHTTPMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = RetryPolicy.defaultRetryableHTTPMethods, retryableHTTPStatusCodes: Swift.Set<Swift.Int> = RetryPolicy.defaultRetryableHTTPStatusCodes, retryableURLErrorCodes: Swift.Set<Foundation.URLError.Code> = RetryPolicy.defaultRetryableURLErrorCodes) -> zy_fpay_validacionfacial_lib_ios.RetryPolicy
+}
+open class ConnectionLostRetryPolicy : zy_fpay_validacionfacial_lib_ios.RetryPolicy {
+  public init(retryLimit: Swift.UInt = RetryPolicy.defaultRetryLimit, exponentialBackoffBase: Swift.UInt = RetryPolicy.defaultExponentialBackoffBase, exponentialBackoffScale: Swift.Double = RetryPolicy.defaultExponentialBackoffScale, retryableHTTPMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = RetryPolicy.defaultRetryableHTTPMethods)
+  @objc deinit
+}
+extension zy_fpay_validacionfacial_lib_ios.RequestInterceptor where Self == zy_fpay_validacionfacial_lib_ios.ConnectionLostRetryPolicy {
+  public static var connectionLostRetryPolicy: zy_fpay_validacionfacial_lib_ios.ConnectionLostRetryPolicy {
+    get
+  }
+  public static func connectionLostRetryPolicy(retryLimit: Swift.UInt = RetryPolicy.defaultRetryLimit, exponentialBackoffBase: Swift.UInt = RetryPolicy.defaultExponentialBackoffBase, exponentialBackoffScale: Swift.Double = RetryPolicy.defaultExponentialBackoffScale, retryableHTTPMethods: Swift.Set<zy_fpay_validacionfacial_lib_ios.HTTPMethod> = RetryPolicy.defaultRetryableHTTPMethods) -> zy_fpay_validacionfacial_lib_ios.ConnectionLostRetryPolicy
+}
+open class ServerTrustManager {
+  final public let allHostsMustBeEvaluated: Swift.Bool
+  final public let evaluators: [Swift.String : zy_fpay_validacionfacial_lib_ios.ServerTrustEvaluating]
+  public init(allHostsMustBeEvaluated: Swift.Bool = true, evaluators: [Swift.String : zy_fpay_validacionfacial_lib_ios.ServerTrustEvaluating])
+  open func serverTrustEvaluator(forHost host: Swift.String) throws -> zy_fpay_validacionfacial_lib_ios.ServerTrustEvaluating?
+  @objc deinit
+}
+public protocol ServerTrustEvaluating {
+  func evaluate(_ trust: Security.SecTrust, forHost host: Swift.String) throws
+}
+final public class DefaultTrustEvaluator : zy_fpay_validacionfacial_lib_ios.ServerTrustEvaluating {
+  public init(validateHost: Swift.Bool = true)
+  final public func evaluate(_ trust: Security.SecTrust, forHost host: Swift.String) throws
+  @objc deinit
+}
+final public class RevocationTrustEvaluator : zy_fpay_validacionfacial_lib_ios.ServerTrustEvaluating {
+  public struct Options : Swift.OptionSet {
+    public static let crl: zy_fpay_validacionfacial_lib_ios.RevocationTrustEvaluator.Options
+    public static let networkAccessDisabled: zy_fpay_validacionfacial_lib_ios.RevocationTrustEvaluator.Options
+    public static let ocsp: zy_fpay_validacionfacial_lib_ios.RevocationTrustEvaluator.Options
+    public static let preferCRL: zy_fpay_validacionfacial_lib_ios.RevocationTrustEvaluator.Options
+    public static let requirePositiveResponse: zy_fpay_validacionfacial_lib_ios.RevocationTrustEvaluator.Options
+    public static let any: zy_fpay_validacionfacial_lib_ios.RevocationTrustEvaluator.Options
+    public let rawValue: CoreFoundation.CFOptionFlags
+    public init(rawValue: CoreFoundation.CFOptionFlags)
+    public typealias ArrayLiteralElement = zy_fpay_validacionfacial_lib_ios.RevocationTrustEvaluator.Options
+    public typealias Element = zy_fpay_validacionfacial_lib_ios.RevocationTrustEvaluator.Options
+    public typealias RawValue = CoreFoundation.CFOptionFlags
+  }
+  public init(performDefaultValidation: Swift.Bool = true, validateHost: Swift.Bool = true, options: zy_fpay_validacionfacial_lib_ios.RevocationTrustEvaluator.Options = .any)
+  final public func evaluate(_ trust: Security.SecTrust, forHost host: Swift.String) throws
+  @objc deinit
+}
+extension zy_fpay_validacionfacial_lib_ios.ServerTrustEvaluating where Self == zy_fpay_validacionfacial_lib_ios.RevocationTrustEvaluator {
+  public static var revocationChecking: zy_fpay_validacionfacial_lib_ios.RevocationTrustEvaluator {
+    get
+  }
+  public static func revocationChecking(performDefaultValidation: Swift.Bool = true, validateHost: Swift.Bool = true, options: zy_fpay_validacionfacial_lib_ios.RevocationTrustEvaluator.Options = .any) -> zy_fpay_validacionfacial_lib_ios.RevocationTrustEvaluator
+}
+final public class PinnedCertificatesTrustEvaluator : zy_fpay_validacionfacial_lib_ios.ServerTrustEvaluating {
+  public init(certificates: [Security.SecCertificate] = Bundle.main.af.certificates, acceptSelfSignedCertificates: Swift.Bool = false, performDefaultValidation: Swift.Bool = true, validateHost: Swift.Bool = true)
+  final public func evaluate(_ trust: Security.SecTrust, forHost host: Swift.String) throws
+  @objc deinit
+}
+extension zy_fpay_validacionfacial_lib_ios.ServerTrustEvaluating where Self == zy_fpay_validacionfacial_lib_ios.PinnedCertificatesTrustEvaluator {
+  public static var pinnedCertificates: zy_fpay_validacionfacial_lib_ios.PinnedCertificatesTrustEvaluator {
+    get
+  }
+  public static func pinnedCertificates(certificates: [Security.SecCertificate] = Bundle.main.af.certificates, acceptSelfSignedCertificates: Swift.Bool = false, performDefaultValidation: Swift.Bool = true, validateHost: Swift.Bool = true) -> zy_fpay_validacionfacial_lib_ios.PinnedCertificatesTrustEvaluator
+}
+final public class PublicKeysTrustEvaluator : zy_fpay_validacionfacial_lib_ios.ServerTrustEvaluating {
+  public init(keys: [Security.SecKey] = Bundle.main.af.publicKeys, performDefaultValidation: Swift.Bool = true, validateHost: Swift.Bool = true)
+  final public func evaluate(_ trust: Security.SecTrust, forHost host: Swift.String) throws
+  @objc deinit
+}
+extension zy_fpay_validacionfacial_lib_ios.ServerTrustEvaluating where Self == zy_fpay_validacionfacial_lib_ios.PublicKeysTrustEvaluator {
+  public static var publicKeys: zy_fpay_validacionfacial_lib_ios.PublicKeysTrustEvaluator {
+    get
+  }
+  public static func publicKeys(keys: [Security.SecKey] = Bundle.main.af.publicKeys, performDefaultValidation: Swift.Bool = true, validateHost: Swift.Bool = true) -> zy_fpay_validacionfacial_lib_ios.PublicKeysTrustEvaluator
+}
+final public class CompositeTrustEvaluator : zy_fpay_validacionfacial_lib_ios.ServerTrustEvaluating {
+  public init(evaluators: [zy_fpay_validacionfacial_lib_ios.ServerTrustEvaluating])
+  final public func evaluate(_ trust: Security.SecTrust, forHost host: Swift.String) throws
+  @objc deinit
+}
+extension zy_fpay_validacionfacial_lib_ios.ServerTrustEvaluating where Self == zy_fpay_validacionfacial_lib_ios.CompositeTrustEvaluator {
+  public static func composite(evaluators: [zy_fpay_validacionfacial_lib_ios.ServerTrustEvaluating]) -> zy_fpay_validacionfacial_lib_ios.CompositeTrustEvaluator
+}
+@available(*, deprecated, renamed: "DisabledTrustEvaluator", message: "DisabledEvaluator has been renamed DisabledTrustEvaluator.")
+public typealias DisabledEvaluator = zy_fpay_validacionfacial_lib_ios.DisabledTrustEvaluator
+final public class DisabledTrustEvaluator : zy_fpay_validacionfacial_lib_ios.ServerTrustEvaluating {
+  public init()
+  final public func evaluate(_ trust: Security.SecTrust, forHost host: Swift.String) throws
+  @objc deinit
+}
+extension Swift.Array where Element == zy_fpay_validacionfacial_lib_ios.ServerTrustEvaluating {
+  public func evaluate(_ trust: Security.SecTrust, forHost host: Swift.String) throws
+}
+extension Foundation.Bundle : zy_fpay_validacionfacial_lib_ios.AlamofireExtended {
+  public typealias ExtendedType = Foundation.Bundle
+}
+extension zy_fpay_validacionfacial_lib_ios.AlamofireExtension where ExtendedType : Foundation.Bundle {
+  public var certificates: [Security.SecCertificate] {
+    get
+  }
+  public var publicKeys: [Security.SecKey] {
+    get
+  }
+  public func paths(forResourcesOfTypes types: [Swift.String]) -> [Swift.String]
+}
+extension Security.SecTrust : zy_fpay_validacionfacial_lib_ios.AlamofireExtended {
+  public typealias ExtendedType = Security.SecTrust
+}
+extension zy_fpay_validacionfacial_lib_ios.AlamofireExtension where ExtendedType == Security.SecTrust {
+  @available(iOS 12, macOS 10.14, tvOS 12, watchOS 5, *)
+  public func evaluate(afterApplying policy: Security.SecPolicy) throws
+  @available(iOS, introduced: 10, deprecated: 12, renamed: "evaluate(afterApplying:)")
+  @available(macOS, introduced: 10.12, deprecated: 10.14, renamed: "evaluate(afterApplying:)")
+  @available(tvOS, introduced: 10, deprecated: 12, renamed: "evaluate(afterApplying:)")
+  @available(watchOS, introduced: 3, deprecated: 5, renamed: "evaluate(afterApplying:)")
+  public func validate(policy: Security.SecPolicy, errorProducer: (_ status: Darwin.OSStatus, _ result: Security.SecTrustResultType) -> Swift.Error) throws
+  public func apply(policy: Security.SecPolicy) throws -> Security.SecTrust
+  @available(iOS 12, macOS 10.14, tvOS 12, watchOS 5, *)
+  public func evaluate() throws
+  @available(iOS, introduced: 10, deprecated: 12, renamed: "evaluate()")
+  @available(macOS, introduced: 10.12, deprecated: 10.14, renamed: "evaluate()")
+  @available(tvOS, introduced: 10, deprecated: 12, renamed: "evaluate()")
+  @available(watchOS, introduced: 3, deprecated: 5, renamed: "evaluate()")
+  public func validate(errorProducer: (_ status: Darwin.OSStatus, _ result: Security.SecTrustResultType) -> Swift.Error) throws
+  public func setAnchorCertificates(_ certificates: [Security.SecCertificate]) throws
+  public var publicKeys: [Security.SecKey] {
+    get
+  }
+  public var certificates: [Security.SecCertificate] {
+    get
+  }
+  public var certificateData: [Foundation.Data] {
+    get
+  }
+  public func performDefaultValidation(forHost host: Swift.String) throws
+  public func performValidation(forHost host: Swift.String) throws
+}
+extension Security.SecPolicy : zy_fpay_validacionfacial_lib_ios.AlamofireExtended {
+  public typealias ExtendedType = Security.SecPolicy
+}
+extension zy_fpay_validacionfacial_lib_ios.AlamofireExtension where ExtendedType == Security.SecPolicy {
+  public static let `default`: Security.SecPolicy
+  public static func hostname(_ hostname: Swift.String) -> Security.SecPolicy
+  public static func revocation(options: zy_fpay_validacionfacial_lib_ios.RevocationTrustEvaluator.Options) throws -> Security.SecPolicy
+}
+extension Swift.Array : zy_fpay_validacionfacial_lib_ios.AlamofireExtended {
+  public typealias ExtendedType = Swift.Array<Element>
+}
+extension zy_fpay_validacionfacial_lib_ios.AlamofireExtension where ExtendedType == [Security.SecCertificate] {
+  public var data: [Foundation.Data] {
+    get
+  }
+  public var publicKeys: [Security.SecKey] {
+    get
+  }
+}
+extension Security.SecCertificate : zy_fpay_validacionfacial_lib_ios.AlamofireExtended {
+  public typealias ExtendedType = Security.SecCertificate
+}
+extension zy_fpay_validacionfacial_lib_ios.AlamofireExtension where ExtendedType == Security.SecCertificate {
+  public var publicKey: Security.SecKey? {
+    get
+  }
+}
+extension Swift.Int32 : zy_fpay_validacionfacial_lib_ios.AlamofireExtended {
+  public typealias ExtendedType = Swift.Int32
+}
+extension zy_fpay_validacionfacial_lib_ios.AlamofireExtension where ExtendedType == Swift.Int32 {
+  public var isSuccess: Swift.Bool {
+    get
+  }
+}
+extension Security.SecTrustResultType : zy_fpay_validacionfacial_lib_ios.AlamofireExtended {
+  public typealias ExtendedType = Security.SecTrustResultType
+}
+extension zy_fpay_validacionfacial_lib_ios.AlamofireExtension where ExtendedType == Security.SecTrustResultType {
+  public var isSuccess: Swift.Bool {
+    get
+  }
+}
+open class Session {
+  public static let `default`: zy_fpay_validacionfacial_lib_ios.Session
+  final public let session: Foundation.URLSession
+  final public let delegate: zy_fpay_validacionfacial_lib_ios.SessionDelegate
+  final public let rootQueue: Dispatch.DispatchQueue
+  final public let startRequestsImmediately: Swift.Bool
+  final public let requestQueue: Dispatch.DispatchQueue
+  final public let serializationQueue: Dispatch.DispatchQueue
+  final public let interceptor: zy_fpay_validacionfacial_lib_ios.RequestInterceptor?
+  final public let serverTrustManager: zy_fpay_validacionfacial_lib_ios.ServerTrustManager?
+  final public let redirectHandler: zy_fpay_validacionfacial_lib_ios.RedirectHandler?
+  final public let cachedResponseHandler: zy_fpay_validacionfacial_lib_ios.CachedResponseHandler?
+  final public let eventMonitor: zy_fpay_validacionfacial_lib_ios.CompositeEventMonitor
+  final public let defaultEventMonitors: [zy_fpay_validacionfacial_lib_ios.EventMonitor]
+  public init(session: Foundation.URLSession, delegate: zy_fpay_validacionfacial_lib_ios.SessionDelegate, rootQueue: Dispatch.DispatchQueue, startRequestsImmediately: Swift.Bool = true, requestQueue: Dispatch.DispatchQueue? = nil, serializationQueue: Dispatch.DispatchQueue? = nil, interceptor: zy_fpay_validacionfacial_lib_ios.RequestInterceptor? = nil, serverTrustManager: zy_fpay_validacionfacial_lib_ios.ServerTrustManager? = nil, redirectHandler: zy_fpay_validacionfacial_lib_ios.RedirectHandler? = nil, cachedResponseHandler: zy_fpay_validacionfacial_lib_ios.CachedResponseHandler? = nil, eventMonitors: [zy_fpay_validacionfacial_lib_ios.EventMonitor] = [])
+  convenience public init(configuration: Foundation.URLSessionConfiguration = URLSessionConfiguration.af.default, delegate: zy_fpay_validacionfacial_lib_ios.SessionDelegate = SessionDelegate(), rootQueue: Dispatch.DispatchQueue = DispatchQueue(label: "org.alamofire.session.rootQueue"), startRequestsImmediately: Swift.Bool = true, requestQueue: Dispatch.DispatchQueue? = nil, serializationQueue: Dispatch.DispatchQueue? = nil, interceptor: zy_fpay_validacionfacial_lib_ios.RequestInterceptor? = nil, serverTrustManager: zy_fpay_validacionfacial_lib_ios.ServerTrustManager? = nil, redirectHandler: zy_fpay_validacionfacial_lib_ios.RedirectHandler? = nil, cachedResponseHandler: zy_fpay_validacionfacial_lib_ios.CachedResponseHandler? = nil, eventMonitors: [zy_fpay_validacionfacial_lib_ios.EventMonitor] = [])
+  @objc deinit
+  public func withAllRequests(perform action: @escaping (Swift.Set<zy_fpay_validacionfacial_lib_ios.Request>) -> Swift.Void)
+  public func cancelAllRequests(completingOnQueue queue: Dispatch.DispatchQueue = .main, completion: (() -> Swift.Void)? = nil)
+  public typealias RequestModifier = (inout Foundation.URLRequest) throws -> Swift.Void
+  open func request(_ convertible: zy_fpay_validacionfacial_lib_ios.URLConvertible, method: zy_fpay_validacionfacial_lib_ios.HTTPMethod = .get, parameters: zy_fpay_validacionfacial_lib_ios.Parameters? = nil, encoding: zy_fpay_validacionfacial_lib_ios.ParameterEncoding = URLEncoding.default, headers: zy_fpay_validacionfacial_lib_ios.HTTPHeaders? = nil, interceptor: zy_fpay_validacionfacial_lib_ios.RequestInterceptor? = nil, requestModifier: zy_fpay_validacionfacial_lib_ios.Session.RequestModifier? = nil) -> zy_fpay_validacionfacial_lib_ios.DataRequest
+  open func request<Parameters>(_ convertible: zy_fpay_validacionfacial_lib_ios.URLConvertible, method: zy_fpay_validacionfacial_lib_ios.HTTPMethod = .get, parameters: Parameters? = nil, encoder: zy_fpay_validacionfacial_lib_ios.ParameterEncoder = URLEncodedFormParameterEncoder.default, headers: zy_fpay_validacionfacial_lib_ios.HTTPHeaders? = nil, interceptor: zy_fpay_validacionfacial_lib_ios.RequestInterceptor? = nil, requestModifier: zy_fpay_validacionfacial_lib_ios.Session.RequestModifier? = nil) -> zy_fpay_validacionfacial_lib_ios.DataRequest where Parameters : Swift.Encodable
+  open func request(_ convertible: zy_fpay_validacionfacial_lib_ios.URLRequestConvertible, interceptor: zy_fpay_validacionfacial_lib_ios.RequestInterceptor? = nil) -> zy_fpay_validacionfacial_lib_ios.DataRequest
+  open func streamRequest<Parameters>(_ convertible: zy_fpay_validacionfacial_lib_ios.URLConvertible, method: zy_fpay_validacionfacial_lib_ios.HTTPMethod = .get, parameters: Parameters? = nil, encoder: zy_fpay_validacionfacial_lib_ios.ParameterEncoder = URLEncodedFormParameterEncoder.default, headers: zy_fpay_validacionfacial_lib_ios.HTTPHeaders? = nil, automaticallyCancelOnStreamError: Swift.Bool = false, interceptor: zy_fpay_validacionfacial_lib_ios.RequestInterceptor? = nil, requestModifier: zy_fpay_validacionfacial_lib_ios.Session.RequestModifier? = nil) -> zy_fpay_validacionfacial_lib_ios.DataStreamRequest where Parameters : Swift.Encodable
+  open func streamRequest(_ convertible: zy_fpay_validacionfacial_lib_ios.URLConvertible, method: zy_fpay_validacionfacial_lib_ios.HTTPMethod = .get, headers: zy_fpay_validacionfacial_lib_ios.HTTPHeaders? = nil, automaticallyCancelOnStreamError: Swift.Bool = false, interceptor: zy_fpay_validacionfacial_lib_ios.RequestInterceptor? = nil, requestModifier: zy_fpay_validacionfacial_lib_ios.Session.RequestModifier? = nil) -> zy_fpay_validacionfacial_lib_ios.DataStreamRequest
+  open func streamRequest(_ convertible: zy_fpay_validacionfacial_lib_ios.URLRequestConvertible, automaticallyCancelOnStreamError: Swift.Bool = false, interceptor: zy_fpay_validacionfacial_lib_ios.RequestInterceptor? = nil) -> zy_fpay_validacionfacial_lib_ios.DataStreamRequest
+  open func download(_ convertible: zy_fpay_validacionfacial_lib_ios.URLConvertible, method: zy_fpay_validacionfacial_lib_ios.HTTPMethod = .get, parameters: zy_fpay_validacionfacial_lib_ios.Parameters? = nil, encoding: zy_fpay_validacionfacial_lib_ios.ParameterEncoding = URLEncoding.default, headers: zy_fpay_validacionfacial_lib_ios.HTTPHeaders? = nil, interceptor: zy_fpay_validacionfacial_lib_ios.RequestInterceptor? = nil, requestModifier: zy_fpay_validacionfacial_lib_ios.Session.RequestModifier? = nil, to destination: zy_fpay_validacionfacial_lib_ios.DownloadRequest.Destination? = nil) -> zy_fpay_validacionfacial_lib_ios.DownloadRequest
+  open func download<Parameters>(_ convertible: zy_fpay_validacionfacial_lib_ios.URLConvertible, method: zy_fpay_validacionfacial_lib_ios.HTTPMethod = .get, parameters: Parameters? = nil, encoder: zy_fpay_validacionfacial_lib_ios.ParameterEncoder = URLEncodedFormParameterEncoder.default, headers: zy_fpay_validacionfacial_lib_ios.HTTPHeaders? = nil, interceptor: zy_fpay_validacionfacial_lib_ios.RequestInterceptor? = nil, requestModifier: zy_fpay_validacionfacial_lib_ios.Session.RequestModifier? = nil, to destination: zy_fpay_validacionfacial_lib_ios.DownloadRequest.Destination? = nil) -> zy_fpay_validacionfacial_lib_ios.DownloadRequest where Parameters : Swift.Encodable
+  open func download(_ convertible: zy_fpay_validacionfacial_lib_ios.URLRequestConvertible, interceptor: zy_fpay_validacionfacial_lib_ios.RequestInterceptor? = nil, to destination: zy_fpay_validacionfacial_lib_ios.DownloadRequest.Destination? = nil) -> zy_fpay_validacionfacial_lib_ios.DownloadRequest
+  open func download(resumingWith data: Foundation.Data, interceptor: zy_fpay_validacionfacial_lib_ios.RequestInterceptor? = nil, to destination: zy_fpay_validacionfacial_lib_ios.DownloadRequest.Destination? = nil) -> zy_fpay_validacionfacial_lib_ios.DownloadRequest
+  open func upload(_ data: Foundation.Data, to convertible: zy_fpay_validacionfacial_lib_ios.URLConvertible, method: zy_fpay_validacionfacial_lib_ios.HTTPMethod = .post, headers: zy_fpay_validacionfacial_lib_ios.HTTPHeaders? = nil, interceptor: zy_fpay_validacionfacial_lib_ios.RequestInterceptor? = nil, fileManager: Foundation.FileManager = .default, requestModifier: zy_fpay_validacionfacial_lib_ios.Session.RequestModifier? = nil) -> zy_fpay_validacionfacial_lib_ios.UploadRequest
+  open func upload(_ data: Foundation.Data, with convertible: zy_fpay_validacionfacial_lib_ios.URLRequestConvertible, interceptor: zy_fpay_validacionfacial_lib_ios.RequestInterceptor? = nil, fileManager: Foundation.FileManager = .default) -> zy_fpay_validacionfacial_lib_ios.UploadRequest
+  open func upload(_ fileURL: Foundation.URL, to convertible: zy_fpay_validacionfacial_lib_ios.URLConvertible, method: zy_fpay_validacionfacial_lib_ios.HTTPMethod = .post, headers: zy_fpay_validacionfacial_lib_ios.HTTPHeaders? = nil, interceptor: zy_fpay_validacionfacial_lib_ios.RequestInterceptor? = nil, fileManager: Foundation.FileManager = .default, requestModifier: zy_fpay_validacionfacial_lib_ios.Session.RequestModifier? = nil) -> zy_fpay_validacionfacial_lib_ios.UploadRequest
+  open func upload(_ fileURL: Foundation.URL, with convertible: zy_fpay_validacionfacial_lib_ios.URLRequestConvertible, interceptor: zy_fpay_validacionfacial_lib_ios.RequestInterceptor? = nil, fileManager: Foundation.FileManager = .default) -> zy_fpay_validacionfacial_lib_ios.UploadRequest
+  open func upload(_ stream: Foundation.InputStream, to convertible: zy_fpay_validacionfacial_lib_ios.URLConvertible, method: zy_fpay_validacionfacial_lib_ios.HTTPMethod = .post, headers: zy_fpay_validacionfacial_lib_ios.HTTPHeaders? = nil, interceptor: zy_fpay_validacionfacial_lib_ios.RequestInterceptor? = nil, fileManager: Foundation.FileManager = .default, requestModifier: zy_fpay_validacionfacial_lib_ios.Session.RequestModifier? = nil) -> zy_fpay_validacionfacial_lib_ios.UploadRequest
+  open func upload(_ stream: Foundation.InputStream, with convertible: zy_fpay_validacionfacial_lib_ios.URLRequestConvertible, interceptor: zy_fpay_validacionfacial_lib_ios.RequestInterceptor? = nil, fileManager: Foundation.FileManager = .default) -> zy_fpay_validacionfacial_lib_ios.UploadRequest
+  open func upload(multipartFormData: @escaping (zy_fpay_validacionfacial_lib_ios.MultipartFormData) -> Swift.Void, to url: zy_fpay_validacionfacial_lib_ios.URLConvertible, usingThreshold encodingMemoryThreshold: Swift.UInt64 = MultipartFormData.encodingMemoryThreshold, method: zy_fpay_validacionfacial_lib_ios.HTTPMethod = .post, headers: zy_fpay_validacionfacial_lib_ios.HTTPHeaders? = nil, interceptor: zy_fpay_validacionfacial_lib_ios.RequestInterceptor? = nil, fileManager: Foundation.FileManager = .default, requestModifier: zy_fpay_validacionfacial_lib_ios.Session.RequestModifier? = nil) -> zy_fpay_validacionfacial_lib_ios.UploadRequest
+  open func upload(multipartFormData: @escaping (zy_fpay_validacionfacial_lib_ios.MultipartFormData) -> Swift.Void, with request: zy_fpay_validacionfacial_lib_ios.URLRequestConvertible, usingThreshold encodingMemoryThreshold: Swift.UInt64 = MultipartFormData.encodingMemoryThreshold, interceptor: zy_fpay_validacionfacial_lib_ios.RequestInterceptor? = nil, fileManager: Foundation.FileManager = .default) -> zy_fpay_validacionfacial_lib_ios.UploadRequest
+  open func upload(multipartFormData: zy_fpay_validacionfacial_lib_ios.MultipartFormData, to url: zy_fpay_validacionfacial_lib_ios.URLConvertible, usingThreshold encodingMemoryThreshold: Swift.UInt64 = MultipartFormData.encodingMemoryThreshold, method: zy_fpay_validacionfacial_lib_ios.HTTPMethod = .post, headers: zy_fpay_validacionfacial_lib_ios.HTTPHeaders? = nil, interceptor: zy_fpay_validacionfacial_lib_ios.RequestInterceptor? = nil, fileManager: Foundation.FileManager = .default, requestModifier: zy_fpay_validacionfacial_lib_ios.Session.RequestModifier? = nil) -> zy_fpay_validacionfacial_lib_ios.UploadRequest
+  open func upload(multipartFormData: zy_fpay_validacionfacial_lib_ios.MultipartFormData, with request: zy_fpay_validacionfacial_lib_ios.URLRequestConvertible, usingThreshold encodingMemoryThreshold: Swift.UInt64 = MultipartFormData.encodingMemoryThreshold, interceptor: zy_fpay_validacionfacial_lib_ios.RequestInterceptor? = nil, fileManager: Foundation.FileManager = .default) -> zy_fpay_validacionfacial_lib_ios.UploadRequest
+}
+extension zy_fpay_validacionfacial_lib_ios.Session : zy_fpay_validacionfacial_lib_ios.RequestDelegate {
+  public var sessionConfiguration: Foundation.URLSessionConfiguration {
+    get
+  }
+  public var startImmediately: Swift.Bool {
+    get
+  }
+  public func cleanup(after request: zy_fpay_validacionfacial_lib_ios.Request)
+  public func retryResult(for request: zy_fpay_validacionfacial_lib_ios.Request, dueTo error: zy_fpay_validacionfacial_lib_ios.AFError, completion: @escaping (zy_fpay_validacionfacial_lib_ios.RetryResult) -> Swift.Void)
+  public func retryRequest(_ request: zy_fpay_validacionfacial_lib_ios.Request, withDelay timeDelay: Foundation.TimeInterval?)
+}
+@objc open class SessionDelegate : ObjectiveC.NSObject {
+  public init(fileManager: Foundation.FileManager = .default)
+  @objc deinit
+}
+extension zy_fpay_validacionfacial_lib_ios.SessionDelegate : Foundation.URLSessionDelegate {
+  @objc dynamic open func urlSession(_ session: Foundation.URLSession, didBecomeInvalidWithError error: Swift.Error?)
+}
+extension zy_fpay_validacionfacial_lib_ios.SessionDelegate : Foundation.URLSessionTaskDelegate {
+  @objc dynamic open func urlSession(_ session: Foundation.URLSession, task: Foundation.URLSessionTask, didReceive challenge: Foundation.URLAuthenticationChallenge, completionHandler: @escaping (Foundation.URLSession.AuthChallengeDisposition, Foundation.URLCredential?) -> Swift.Void)
+  @objc dynamic open func urlSession(_ session: Foundation.URLSession, task: Foundation.URLSessionTask, didSendBodyData bytesSent: Swift.Int64, totalBytesSent: Swift.Int64, totalBytesExpectedToSend: Swift.Int64)
+  @objc dynamic open func urlSession(_ session: Foundation.URLSession, task: Foundation.URLSessionTask, needNewBodyStream completionHandler: @escaping (Foundation.InputStream?) -> Swift.Void)
+  @objc dynamic open func urlSession(_ session: Foundation.URLSession, task: Foundation.URLSessionTask, willPerformHTTPRedirection response: Foundation.HTTPURLResponse, newRequest request: Foundation.URLRequest, completionHandler: @escaping (Foundation.URLRequest?) -> Swift.Void)
+  @objc dynamic open func urlSession(_ session: Foundation.URLSession, task: Foundation.URLSessionTask, didFinishCollecting metrics: Foundation.URLSessionTaskMetrics)
+  @objc dynamic open func urlSession(_ session: Foundation.URLSession, task: Foundation.URLSessionTask, didCompleteWithError error: Swift.Error?)
+  @available(macOS 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
+  @objc dynamic open func urlSession(_ session: Foundation.URLSession, taskIsWaitingForConnectivity task: Foundation.URLSessionTask)
+}
+extension zy_fpay_validacionfacial_lib_ios.SessionDelegate : Foundation.URLSessionDataDelegate {
+  @objc dynamic open func urlSession(_ session: Foundation.URLSession, dataTask: Foundation.URLSessionDataTask, didReceive data: Foundation.Data)
+  @objc dynamic open func urlSession(_ session: Foundation.URLSession, dataTask: Foundation.URLSessionDataTask, willCacheResponse proposedResponse: Foundation.CachedURLResponse, completionHandler: @escaping (Foundation.CachedURLResponse?) -> Swift.Void)
+}
+extension zy_fpay_validacionfacial_lib_ios.SessionDelegate : Foundation.URLSessionDownloadDelegate {
+  @objc dynamic open func urlSession(_ session: Foundation.URLSession, downloadTask: Foundation.URLSessionDownloadTask, didResumeAtOffset fileOffset: Swift.Int64, expectedTotalBytes: Swift.Int64)
+  @objc dynamic open func urlSession(_ session: Foundation.URLSession, downloadTask: Foundation.URLSessionDownloadTask, didWriteData bytesWritten: Swift.Int64, totalBytesWritten: Swift.Int64, totalBytesExpectedToWrite: Swift.Int64)
+  @objc dynamic open func urlSession(_ session: Foundation.URLSession, downloadTask: Foundation.URLSessionDownloadTask, didFinishDownloadingTo location: Foundation.URL)
+}
+public enum Model : Swift.String {
+  case simulator, iPod1, iPod2, iPod3, iPod4, iPod5, iPod6, iPod7, iPad2, iPad3, iPad4, iPadAir, iPadAir2, iPadAir3, iPadAir4, iPadAir5, iPad5, iPad6, iPad7, iPad8, iPad9, iPadMini, iPadMini2, iPadMini3, iPadMini4, iPadMini5, iPadMini6, iPadPro9_7, iPadPro10_5, iPadPro11, iPadPro2_11, iPadPro3_11, iPadPro12_9, iPadPro2_12_9, iPadPro3_12_9, iPadPro4_12_9, iPadPro5_12_9, iPhone4, iPhone4S, iPhone5, iPhone5S, iPhone5C, iPhone6, iPhone6Plus, iPhone6S, iPhone6SPlus, iPhoneSE, iPhone7, iPhone7Plus, iPhone8, iPhone8Plus, iPhoneX, iPhoneXS, iPhoneXSMax, iPhoneXR, iPhone11, iPhone11Pro, iPhone11ProMax, iPhoneSE2, iPhone12Mini, iPhone12, iPhone12Pro, iPhone12ProMax, iPhone13Mini, iPhone13, iPhone13Pro, iPhone13ProMax, iPhoneSE3, iPhone14, iPhone14Plus, iPhone14Pro, iPhone14ProMax, iPhoneSE4, AppleWatch1, AppleWatchS1, AppleWatchS2, AppleWatchS3, AppleWatchS4, AppleWatchS5, AppleWatchSE, AppleWatchS6, AppleWatchS7, AppleWatchSEGPS40, AppleWatchSEGPS44, AppleWatchSEGPSCELL40, AppleWatchSEGPSCELL44, AppleWatchS8GPS40, AppleWatchS8GPS44, AppleWatchS8GPSCELL40, AppleWatchS8GPSCELL44, AppleWatchUltra, AppleTV, AppleTV1, AppleTV2, AppleTV3, AppleTV4, AppleTV_4K, AppleTV2_4K, unrecognized
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public protocol URLConvertible {
+  func asURL() throws -> Foundation.URL
+}
+extension Swift.String : zy_fpay_validacionfacial_lib_ios.URLConvertible {
+  public func asURL() throws -> Foundation.URL
+}
+extension Foundation.URL : zy_fpay_validacionfacial_lib_ios.URLConvertible {
+  public func asURL() throws -> Foundation.URL
+}
+extension Foundation.URLComponents : zy_fpay_validacionfacial_lib_ios.URLConvertible {
+  public func asURL() throws -> Foundation.URL
+}
+public protocol URLRequestConvertible {
+  func asURLRequest() throws -> Foundation.URLRequest
+}
+extension zy_fpay_validacionfacial_lib_ios.URLRequestConvertible {
+  public var urlRequest: Foundation.URLRequest? {
+    get
+  }
+}
+extension Foundation.URLRequest : zy_fpay_validacionfacial_lib_ios.URLRequestConvertible {
+  public func asURLRequest() throws -> Foundation.URLRequest
+}
+extension Foundation.URLRequest {
+  public init(url: zy_fpay_validacionfacial_lib_ios.URLConvertible, method: zy_fpay_validacionfacial_lib_ios.HTTPMethod, headers: zy_fpay_validacionfacial_lib_ios.HTTPHeaders? = nil) throws
+}
+final public class URLEncodedFormEncoder {
+  public enum ArrayEncoding {
+    case brackets
+    case noBrackets
+    case indexInBrackets
+    public static func == (a: zy_fpay_validacionfacial_lib_ios.URLEncodedFormEncoder.ArrayEncoding, b: zy_fpay_validacionfacial_lib_ios.URLEncodedFormEncoder.ArrayEncoding) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  public enum BoolEncoding {
+    case numeric
+    case literal
+    public static func == (a: zy_fpay_validacionfacial_lib_ios.URLEncodedFormEncoder.BoolEncoding, b: zy_fpay_validacionfacial_lib_ios.URLEncodedFormEncoder.BoolEncoding) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  public enum DataEncoding {
+    case deferredToData
+    case base64
+    case custom((Foundation.Data) throws -> Swift.String)
+  }
+  public enum DateEncoding {
+    case deferredToDate
+    case secondsSince1970
+    case millisecondsSince1970
+    case iso8601
+    case formatted(Foundation.DateFormatter)
+    case custom((Foundation.Date) throws -> Swift.String)
+  }
+  public enum KeyEncoding {
+    case useDefaultKeys
+    case convertToSnakeCase
+    case convertToKebabCase
+    case capitalized
+    case uppercased
+    case lowercased
+    case custom((Swift.String) -> Swift.String)
+  }
+  public enum SpaceEncoding {
+    case percentEscaped
+    case plusReplaced
+    public static func == (a: zy_fpay_validacionfacial_lib_ios.URLEncodedFormEncoder.SpaceEncoding, b: zy_fpay_validacionfacial_lib_ios.URLEncodedFormEncoder.SpaceEncoding) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  public enum Error : Swift.Error {
+    case invalidRootObject(Swift.String)
+  }
+  final public let alphabetizeKeyValuePairs: Swift.Bool
+  final public let arrayEncoding: zy_fpay_validacionfacial_lib_ios.URLEncodedFormEncoder.ArrayEncoding
+  final public let boolEncoding: zy_fpay_validacionfacial_lib_ios.URLEncodedFormEncoder.BoolEncoding
+  final public let dataEncoding: zy_fpay_validacionfacial_lib_ios.URLEncodedFormEncoder.DataEncoding
+  final public let dateEncoding: zy_fpay_validacionfacial_lib_ios.URLEncodedFormEncoder.DateEncoding
+  final public let keyEncoding: zy_fpay_validacionfacial_lib_ios.URLEncodedFormEncoder.KeyEncoding
+  final public let spaceEncoding: zy_fpay_validacionfacial_lib_ios.URLEncodedFormEncoder.SpaceEncoding
+  final public var allowedCharacters: Foundation.CharacterSet
+  public init(alphabetizeKeyValuePairs: Swift.Bool = true, arrayEncoding: zy_fpay_validacionfacial_lib_ios.URLEncodedFormEncoder.ArrayEncoding = .brackets, boolEncoding: zy_fpay_validacionfacial_lib_ios.URLEncodedFormEncoder.BoolEncoding = .numeric, dataEncoding: zy_fpay_validacionfacial_lib_ios.URLEncodedFormEncoder.DataEncoding = .base64, dateEncoding: zy_fpay_validacionfacial_lib_ios.URLEncodedFormEncoder.DateEncoding = .deferredToDate, keyEncoding: zy_fpay_validacionfacial_lib_ios.URLEncodedFormEncoder.KeyEncoding = .useDefaultKeys, spaceEncoding: zy_fpay_validacionfacial_lib_ios.URLEncodedFormEncoder.SpaceEncoding = .percentEscaped, allowedCharacters: Foundation.CharacterSet = .afURLQueryAllowed)
+  final public func encode(_ value: Swift.Encodable) throws -> Swift.String
+  final public func encode(_ value: Swift.Encodable) throws -> Foundation.Data
+  @objc deinit
+}
+extension Foundation.CharacterSet {
+  public static let afURLQueryAllowed: Foundation.CharacterSet
+}
+extension Foundation.URLRequest {
+  public var method: zy_fpay_validacionfacial_lib_ios.HTTPMethod? {
+    get
+    set
+  }
+  public func validate() throws
+}
+extension Foundation.URLSessionConfiguration : zy_fpay_validacionfacial_lib_ios.AlamofireExtended {
+  public typealias ExtendedType = Foundation.URLSessionConfiguration
+}
+extension zy_fpay_validacionfacial_lib_ios.AlamofireExtension where ExtendedType : Foundation.URLSessionConfiguration {
+  public static var `default`: Foundation.URLSessionConfiguration {
+    get
+  }
+  public static var ephemeral: Foundation.URLSessionConfiguration {
+    get
+  }
+}
+extension zy_fpay_validacionfacial_lib_ios.Request {
+  public typealias ValidationResult = Swift.Result<Swift.Void, Swift.Error>
+}
+extension zy_fpay_validacionfacial_lib_ios.DataRequest {
+  public typealias Validation = (Foundation.URLRequest?, Foundation.HTTPURLResponse, Foundation.Data?) -> zy_fpay_validacionfacial_lib_ios.DataRequest.ValidationResult
+  @discardableResult
+  public func validate<S>(statusCode acceptableStatusCodes: S) -> Self where S : Swift.Sequence, S.Element == Swift.Int
+  @discardableResult
+  public func validate<S>(contentType acceptableContentTypes: @autoclosure @escaping () -> S) -> Self where S : Swift.Sequence, S.Element == Swift.String
+  @discardableResult
+  public func validate() -> Self
+}
+extension zy_fpay_validacionfacial_lib_ios.DataStreamRequest {
+  public typealias Validation = (_ request: Foundation.URLRequest?, _ response: Foundation.HTTPURLResponse) -> zy_fpay_validacionfacial_lib_ios.DataStreamRequest.ValidationResult
+  @discardableResult
+  final public func validate<S>(statusCode acceptableStatusCodes: S) -> Self where S : Swift.Sequence, S.Element == Swift.Int
+  @discardableResult
+  final public func validate<S>(contentType acceptableContentTypes: @autoclosure @escaping () -> S) -> Self where S : Swift.Sequence, S.Element == Swift.String
+  @discardableResult
+  final public func validate() -> Self
+}
+extension zy_fpay_validacionfacial_lib_ios.DownloadRequest {
+  public typealias Validation = (_ request: Foundation.URLRequest?, _ response: Foundation.HTTPURLResponse, _ fileURL: Foundation.URL?) -> zy_fpay_validacionfacial_lib_ios.DownloadRequest.ValidationResult
+  @discardableResult
+  public func validate<S>(statusCode acceptableStatusCodes: S) -> Self where S : Swift.Sequence, S.Element == Swift.Int
+  @discardableResult
+  public func validate<S>(contentType acceptableContentTypes: @autoclosure @escaping () -> S) -> Self where S : Swift.Sequence, S.Element == Swift.String
+  @discardableResult
+  public func validate() -> Self
+}
+@objc(ZyApiCross) public class ZyApiCross : ObjectiveC.NSObject {
+  public typealias CallbackLogin = (zy_fpay_validacionfacial_lib_ios.ZyLibResult<Swift.String, zy_fpay_validacionfacial_lib_ios.ZyLibError>) -> Swift.Void
+  public typealias CallbackResponse = (zy_fpay_validacionfacial_lib_ios.ZyLibResult<zy_fpay_validacionfacial_lib_ios.ZyCrossResponse, zy_fpay_validacionfacial_lib_ios.ZyLibError>) -> Swift.Void
+  @objc public init(onView: UIKit.UIViewController)
+  public func login(ruc: Swift.String, user: Swift.String, pass: Swift.String, completion: @escaping zy_fpay_validacionfacial_lib_ios.ZyApiCross.CallbackLogin)
+  public func iniciarFlujo(request: zy_fpay_validacionfacial_lib_ios.ZyCrossRequest, completion: @escaping zy_fpay_validacionfacial_lib_ios.ZyApiCross.CallbackResponse)
+  @objc deinit
+}
+public class ZyLoadingApiUI {
+  public typealias CallbackLoadingUI = (zy_fpay_validacionfacial_lib_ios.ZyUILoadingResult<Swift.Bool, Swift.Bool>) -> Swift.Void
+  public init(onView: UIKit.UIViewController)
+  public func showConfirm(request: zy_fpay_validacionfacial_lib_ios.ZyUILoadingRequest, completion: @escaping zy_fpay_validacionfacial_lib_ios.ZyLoadingApiUI.CallbackLoadingUI)
+  @objc deinit
+}
+public enum ZyLibResult<T, E> {
+  case success(T)
+  case error(E)
+}
+public struct ZyLibError : Swift.Codable {
+  public let coError: Swift.String?
+  public let deError: Swift.String?
+  public var soliNuOperacion: Swift.String?
+  public var bmoNuSolicitud: Swift.String?
+  public let bfResponseDto: zy_fpay_validacionfacial_lib_ios.BfResponseDto?
+  public let ocrDto: zy_fpay_validacionfacial_lib_ios.OcrDto?
+  public enum CodingKeys : Swift.String, Swift.CodingKey {
+    case coError, deError, soliNuOperacion, bmoNuSolicitud
+    case bfResponseDto
+    case ocrDto
+    public init?(rawValue: Swift.String)
+    public init?(stringValue: Swift.String)
+    public init?(intValue: Swift.Int)
+    public typealias RawValue = Swift.String
+    public var intValue: Swift.Int? {
+      get
+    }
+    public var rawValue: Swift.String {
+      get
+    }
+    public var stringValue: Swift.String {
+      get
+    }
+  }
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct ZyValidacionRequest {
+  public init()
+  public var bioTiDoc: Swift.String
+  public var bioNuDoc: Swift.String
+  public var token: Swift.String
+  public var bmoNombres: Swift.String
+  public var bmoApPaterno: Swift.String
+  public var bmoApMaterno: Swift.String
+  public var idSolicitudBmo: Swift.String
+  public var bmoNuOperacionEmps: Swift.String
+  public var isDialogActivated: Swift.Bool
+}
+public struct ZyValidacionResponse {
+  public let bioCodError: Swift.String
+  public let bioDeError: Swift.String
+  public let bioCodErrorReniec: Swift.String
+  public let bioDeErrorReniec: Swift.String
+  public let bioPreNom: Swift.String
+  public let bioApPat: Swift.String
+  public let bioApMat: Swift.String
+  public let bioScore: Swift.String
+  public let bioNuSolicitud: Swift.String
+  public let bioIdTransaccion: Swift.String
+  public let bmoIdSolicitud: Swift.String
+}
+public struct ZyCrossRequest {
+  public init()
+  public var token: Swift.String
+  public var bioOperacion: zy_fpay_validacionfacial_lib_ios.ZyTipoOperacion?
+  public var bioPais: Swift.String
+  public var bmoNuOperacionEmps: Swift.String
+  public var bmoNuSolicitud: Swift.String
+  public var bioTiDoc: Swift.String
+  public var bioNuDoc: Swift.String
+  public var bmoNombres: Swift.String
+  public var bmoApPaterno: Swift.String
+  public var bmoApMaterno: Swift.String
+  public var isDialogActivated: Swift.Bool
+}
+public struct ZyCrossResponse : Swift.Codable {
+  public var coError: Swift.String
+  public var deError: Swift.String
+  public var soliNuOperacion: Swift.String
+  public var bmoNuSolicitud: Swift.String
+  public var bfResponseDto: zy_fpay_validacionfacial_lib_ios.BfResponseDto?
+  public var ocrDto: zy_fpay_validacionfacial_lib_ios.OcrDto?
+  public enum CodingKeys : Swift.String, Swift.CodingKey {
+    case coError, deError, soliNuOperacion, bmoNuSolicitud
+    case bfResponseDto
+    case ocrDto
+    public init?(rawValue: Swift.String)
+    public init?(stringValue: Swift.String)
+    public init?(intValue: Swift.Int)
+    public typealias RawValue = Swift.String
+    public var intValue: Swift.Int? {
+      get
+    }
+    public var rawValue: Swift.String {
+      get
+    }
+    public var stringValue: Swift.String {
+      get
+    }
+  }
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct BfResponseDto : Swift.Codable {
+  public var bioCodError: Swift.String
+  public var bioDeError: Swift.String
+  public var bioCodErrorReniec: Swift.String?
+  public var bioDeErrorReniec: Swift.String?
+  public var bioTiDoc: Swift.String
+  public var bioNuDoc: Swift.String
+  public var bioPreNom: Swift.String
+  public var bioApPat: Swift.String
+  public var bioApMat: Swift.String
+  public var biofechaEmission: Swift.String
+  public var bioGenero: Swift.String
+  public var bioScore: Swift.String
+  public var idTxn: Swift.String
+  public var nuSolicitud: Swift.String
+  public var nuIntentos: Swift.String
+  public var nuIntentosCaptura: Swift.String
+  public var bioRnecEstadoCedula: Swift.String
+  public var bioRnecDescripcionEstado: Swift.String
+  public var facialImageSearch: zy_fpay_validacionfacial_lib_ios.FacialImageSearch?
+  public var addressReniec: zy_fpay_validacionfacial_lib_ios.AddressReniec?
+  public enum CodingKeys : Swift.String, Swift.CodingKey {
+    case bioCodError, bioDeError, bioCodErrorReniec, bioDeErrorReniec, bioTiDoc, bioNuDoc, bioPreNom, bioApPat, bioApMat, bioScore, idTxn, nuSolicitud, nuIntentos
+    case facialImageSearch
+    case addressReniec
+    public init?(rawValue: Swift.String)
+    public init?(stringValue: Swift.String)
+    public init?(intValue: Swift.Int)
+    public typealias RawValue = Swift.String
+    public var intValue: Swift.Int? {
+      get
+    }
+    public var rawValue: Swift.String {
+      get
+    }
+    public var stringValue: Swift.String {
+      get
+    }
+  }
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct AddressReniec : Swift.Codable {
+  public var bioCountry: Swift.String
+  public var bioDepartment: Swift.String
+  public var bioProvince: Swift.String
+  public var bioDistric: Swift.String
+  public var bioPrefixAddress: Swift.String
+  public var bioAddress: Swift.String
+  public var bioUrb: Swift.String
+  public var bioPrefixUrbCondResid: Swift.String
+  public enum CodingKeys : Swift.String, Swift.CodingKey {
+    case bioCountry, bioDepartment, bioProvince, bioDistric, bioPrefixAddress, bioAddress, bioUrb, bioPrefixUrbCondResid
+    public init?(rawValue: Swift.String)
+    public init?(stringValue: Swift.String)
+    public init?(intValue: Swift.Int)
+    public typealias RawValue = Swift.String
+    public var intValue: Swift.Int? {
+      get
+    }
+    public var rawValue: Swift.String {
+      get
+    }
+    public var stringValue: Swift.String {
+      get
+    }
+  }
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct FacialImageSearch : Swift.Codable {
+  public var buffer: Swift.String
+  public var formatType: Swift.String
+  public var height: Swift.String
+  public var width: Swift.String
+  public enum CodingKeys : Swift.String, Swift.CodingKey {
+    case buffer, formatType, height, width
+    public init?(rawValue: Swift.String)
+    public init?(stringValue: Swift.String)
+    public init?(intValue: Swift.Int)
+    public typealias RawValue = Swift.String
+    public var intValue: Swift.Int? {
+      get
+    }
+    public var rawValue: Swift.String {
+      get
+    }
+    public var stringValue: Swift.String {
+      get
+    }
+  }
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct OcrDto : Swift.Codable {
+  public var nuIntentos: Swift.String
+  public var nuIntentosCaptura: Swift.String
+  public var rsValidacionDoc: zy_fpay_validacionfacial_lib_ios.RsValidacionDoc?
+  public var rsOcr: zy_fpay_validacionfacial_lib_ios.RsOcr?
+  public var rsOcrResultado: zy_fpay_validacionfacial_lib_ios.RsOcrResultado?
+  public var rsEvaluacionEdad: zy_fpay_validacionfacial_lib_ios.RsEvaluacionEdad?
+  public var rsOcrSelfie: zy_fpay_validacionfacial_lib_ios.RsOcrSelfie?
+  public var rsValidacionDatos: zy_fpay_validacionfacial_lib_ios.RsValidacionDatos?
+  public enum CodingKeys : Swift.String, Swift.CodingKey {
+    case nuIntentos
+    case rsValidacionDoc
+    case rsOcr
+    case rsOcrResultado
+    case rsEvaluacionEdad
+    case rsOcrSelfie
+    case rsValidacionDatos
+    public init?(rawValue: Swift.String)
+    public init?(stringValue: Swift.String)
+    public init?(intValue: Swift.Int)
+    public typealias RawValue = Swift.String
+    public var intValue: Swift.Int? {
+      get
+    }
+    public var rawValue: Swift.String {
+      get
+    }
+    public var stringValue: Swift.String {
+      get
+    }
+  }
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct RsValidacionDoc : Swift.Codable {
+  public var validaDocQualityScore: Swift.String
+  public var validaDocLivenessScore: Swift.String?
+  public var resultadoValidacion: Swift.String
+  public enum CodingKeys : Swift.String, Swift.CodingKey {
+    case validaDocQualityScore, validaDocLivenessScore, resultadoValidacion
+    public init?(rawValue: Swift.String)
+    public init?(stringValue: Swift.String)
+    public init?(intValue: Swift.Int)
+    public typealias RawValue = Swift.String
+    public var intValue: Swift.Int? {
+      get
+    }
+    public var rawValue: Swift.String {
+      get
+    }
+    public var stringValue: Swift.String {
+      get
+    }
+  }
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct RsOcr : Swift.Codable {
+  public var fullName: Swift.String
+  public var firstName: Swift.String
+  public var lastName: Swift.String
+  public var dateOfExpiry: Swift.String
+  public var dateOfBirth: Swift.String
+  public var sex: Swift.String
+  public var age: Swift.String
+  public var placeOfBirth: Swift.String
+  public var dateOfIssue: Swift.String
+  public enum CodingKeys : Swift.String, Swift.CodingKey {
+    case fullName, firstName, lastName, dateOfExpiry, dateOfBirth, sex, age, placeOfBirth
+    public init?(rawValue: Swift.String)
+    public init?(stringValue: Swift.String)
+    public init?(intValue: Swift.Int)
+    public typealias RawValue = Swift.String
+    public var intValue: Swift.Int? {
+      get
+    }
+    public var rawValue: Swift.String {
+      get
+    }
+    public var stringValue: Swift.String {
+      get
+    }
+  }
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct RsOcrResultado : Swift.Codable {
+  public var bioCodError: Swift.String
+  public var bioDeError: Swift.String
+  public var bioCodErrorVB: Swift.String
+  public var bioCodesErrorVB: Swift.String
+  public var bioScore: Swift.String
+  public enum CodingKeys : Swift.String, Swift.CodingKey {
+    case bioCodError, bioDeError, bioCodErrorVB, bioCodesErrorVB, bioScore
+    public init?(rawValue: Swift.String)
+    public init?(stringValue: Swift.String)
+    public init?(intValue: Swift.Int)
+    public typealias RawValue = Swift.String
+    public var intValue: Swift.Int? {
+      get
+    }
+    public var rawValue: Swift.String {
+      get
+    }
+    public var stringValue: Swift.String {
+      get
+    }
+  }
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct RsEvaluacionEdad : Swift.Codable {
+  public var edadAprox: Swift.String
+  public var resultadoValidacion: Swift.String
+  public enum CodingKeys : Swift.String, Swift.CodingKey {
+    case edadAprox, resultadoValidacion
+    public init?(rawValue: Swift.String)
+    public init?(stringValue: Swift.String)
+    public init?(intValue: Swift.Int)
+    public typealias RawValue = Swift.String
+    public var intValue: Swift.Int? {
+      get
+    }
+    public var rawValue: Swift.String {
+      get
+    }
+    public var stringValue: Swift.String {
+      get
+    }
+  }
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct RsOcrSelfie : Swift.Codable {
+  public var bioCodError: Swift.String
+  public var bioDeError: Swift.String
+  public var bioCodErrorVB: Swift.String
+  public var bioDeErrorVB: Swift.String
+  public var idTxn: Swift.String
+  public var nuSolicitud: Swift.String
+  public var bioScore: Swift.String
+  public enum CodingKeys : Swift.String, Swift.CodingKey {
+    case bioCodError, bioDeError, bioCodErrorVB, bioDeErrorVB, idTxn, nuSolicitud, bioScore
+    public init?(rawValue: Swift.String)
+    public init?(stringValue: Swift.String)
+    public init?(intValue: Swift.Int)
+    public typealias RawValue = Swift.String
+    public var intValue: Swift.Int? {
+      get
+    }
+    public var rawValue: Swift.String {
+      get
+    }
+    public var stringValue: Swift.String {
+      get
+    }
+  }
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct RsValidacionDatos : Swift.Codable {
+  public var bioCodError: Swift.String
+  public var bioDeError: Swift.String
+  public var bioCodErrorVB: Swift.String
+  public var bioDeErrorVB: Swift.String
+  public var bioScore: Swift.String
+  public enum CodingKeys : Swift.String, Swift.CodingKey {
+    case bioCodError, bioDeError, bioCodErrorVB, bioDeErrorVB, bioScore
+    public init?(rawValue: Swift.String)
+    public init?(stringValue: Swift.String)
+    public init?(intValue: Swift.Int)
+    public typealias RawValue = Swift.String
+    public var intValue: Swift.Int? {
+      get
+    }
+    public var rawValue: Swift.String {
+      get
+    }
+    public var stringValue: Swift.String {
+      get
+    }
+  }
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public enum ZyTipoOperacion : Swift.Int {
+  case FACIAL
+  case FULL
+  case FLUJO_COLOMBIA
+  case RESULTADO
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+public enum ZyErrorUi : Swift.Int {
+  case EXITO
+  case ERROR_DOC_INVALIDO
+  case ERROR_TIMEOUT
+  case ERROR_NO_HIT
+  case ERROR_SOLICITUD_BLOQUEADA
+  case ERROR_FEIGN_CLIENT
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+public struct ZyUILoadingRequest {
+  public init()
+  public var message: Swift.String?
+  public var animated: Swift.Bool
+}
+public enum ZyUILoadingResult<T, C> {
+  case ok(T)
+  case cancel(C)
+}
+@objc @objcMembers public class ZyReactComp : ObjectiveC.NSObject {
+  @objc public init(onView: UIKit.UIViewController)
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @objcMembers public class ReactRequest : ObjectiveC.NSObject {
+  @objc public var token: Swift.String
+  @objc public var bioOperacion: Swift.String
+  @objc public var bioPais: Swift.String
+  @objc public var bmoNuOperacionEmps: Swift.String
+  @objc public var bmoNuSolicitud: Swift.String
+  @objc public var bioTiDoc: Swift.String
+  @objc public var bioNuDoc: Swift.String
+  @objc public var bmoNombres: Swift.String
+  @objc public var bmoApPaterno: Swift.String
+  @objc public var bmoApMaterno: Swift.String
+  @objc public var isDialogActivated: Swift.Bool
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @objcMembers public class ReactResponse : ObjectiveC.NSObject {
+  @objc public var coError: Swift.String
+  @objc public var deError: Swift.String
+  @objc public var soliNuOperacion: Swift.String
+  @objc public var facebioCodError: Swift.String
+  @objc public var facebioDeError: Swift.String
+  @objc public var facebioCodErrorReniec: Swift.String?
+  @objc public var facebioDeErrorReniec: Swift.String?
+  @objc public var facebioTiDoc: Swift.String
+  @objc public var facebioNuDoc: Swift.String
+  @objc public var facebioPreNom: Swift.String
+  @objc public var facebioApPat: Swift.String
+  @objc public var facebioApMat: Swift.String
+  @objc public var facebioScore: Swift.String
+  @objc public var faceidTxn: Swift.String
+  @objc public var facenuSolicitud: Swift.String
+  @objc public var facefacialImageSearchbuffer: Swift.String
+  @objc public var facefacialImageSearchformatType: Swift.String
+  @objc public var facefacialImageSearchheight: Swift.String
+  @objc public var facefacialImageSearchwidth: Swift.String
+  @objc public var rsValidacionDocScoreValidacion: Swift.String
+  @objc public var rsValidacionDocResultadoValidacion: Swift.String
+  @objc public var rsOcrFirstName: Swift.String?
+  @objc public var rsOcrLastName: Swift.String?
+  @objc public var rsOcrDateOfExpiry: Swift.String?
+  @objc public var rsOcrDateOfBirth: Swift.String?
+  @objc public var rsOcrSex: Swift.String?
+  @objc public var rsOcrAge: Swift.String?
+  @objc public var rsOcrResultadoBioCodError: Swift.String?
+  @objc public var rsOcrResultadoBioDeError: Swift.String?
+  @objc public var rsOcrResultadoBioCodErrorVB: Swift.String?
+  @objc public var rsOcrResultadoBioCodesErrorVB: Swift.String?
+  @objc public var rsOcrResultadoBioScore: Swift.String?
+  @objc public var rsEvaluacionEdadEdadAprox: Swift.String?
+  @objc public var rsEvaluacionEdadEesultadoValidacion: Swift.String?
+  @objc public var rsOcrSelfiebioCodError: Swift.String?
+  @objc public var rsOcrSelfiebioDeError: Swift.String?
+  @objc public var rsOcrSelfiebioCodErrorVB: Swift.String?
+  @objc public var rsOcrSelfiebioDeErrorVB: Swift.String?
+  @objc public var rsOcrSelfieidTxn: Swift.String?
+  @objc public var rsOcrSelfienuSolicitud: Swift.String?
+  @objc public var rsOcrSelfiebioScore: Swift.String?
+  @objc public var rsValidacionDatosbioCodError: Swift.String?
+  @objc public var rsValidacionDatosbioDeError: Swift.String?
+  @objc public var rsValidacionDatosbioCodErrorVB: Swift.String?
+  @objc public var rsValidacionDatosbioDeErrorVB: Swift.String?
+  @objc public var rsValidacionDatosbioScore: Swift.String?
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class ZyUILoadingView : UIKit.UIViewController {
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func viewDidLoad()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public var supportedInterfaceOrientations: UIKit.UIInterfaceOrientationMask {
+    @objc get
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public var shouldAutorotate: Swift.Bool {
+    @objc get
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+extension zy_fpay_validacionfacial_lib_ios.AuthenticationError : Swift.Equatable {}
+extension zy_fpay_validacionfacial_lib_ios.AuthenticationError : Swift.Hashable {}
+extension zy_fpay_validacionfacial_lib_ios.ZyTApiErrorEnum : Swift.Equatable {}
+extension zy_fpay_validacionfacial_lib_ios.ZyTApiErrorEnum : Swift.Hashable {}
+extension zy_fpay_validacionfacial_lib_ios.ZyTApiErrorEnum : Swift.RawRepresentable {}
+extension zy_fpay_validacionfacial_lib_ios.NetworkReachabilityManager.NetworkReachabilityStatus.ConnectionType : Swift.Equatable {}
+extension zy_fpay_validacionfacial_lib_ios.NetworkReachabilityManager.NetworkReachabilityStatus.ConnectionType : Swift.Hashable {}
+extension zy_fpay_validacionfacial_lib_ios.URLEncodedFormParameterEncoder.Destination : Swift.Equatable {}
+extension zy_fpay_validacionfacial_lib_ios.URLEncodedFormParameterEncoder.Destination : Swift.Hashable {}
+extension zy_fpay_validacionfacial_lib_ios.URLEncoding.Destination : Swift.Equatable {}
+extension zy_fpay_validacionfacial_lib_ios.URLEncoding.Destination : Swift.Hashable {}
+extension zy_fpay_validacionfacial_lib_ios.URLEncoding.ArrayEncoding : Swift.Equatable {}
+extension zy_fpay_validacionfacial_lib_ios.URLEncoding.ArrayEncoding : Swift.Hashable {}
+extension zy_fpay_validacionfacial_lib_ios.URLEncoding.BoolEncoding : Swift.Equatable {}
+extension zy_fpay_validacionfacial_lib_ios.URLEncoding.BoolEncoding : Swift.Hashable {}
+extension zy_fpay_validacionfacial_lib_ios.Request.State : Swift.Equatable {}
+extension zy_fpay_validacionfacial_lib_ios.Request.State : Swift.Hashable {}
+extension zy_fpay_validacionfacial_lib_ios.Model : Swift.Equatable {}
+extension zy_fpay_validacionfacial_lib_ios.Model : Swift.Hashable {}
+extension zy_fpay_validacionfacial_lib_ios.Model : Swift.RawRepresentable {}
+extension zy_fpay_validacionfacial_lib_ios.URLEncodedFormEncoder.ArrayEncoding : Swift.Equatable {}
+extension zy_fpay_validacionfacial_lib_ios.URLEncodedFormEncoder.ArrayEncoding : Swift.Hashable {}
+extension zy_fpay_validacionfacial_lib_ios.URLEncodedFormEncoder.BoolEncoding : Swift.Equatable {}
+extension zy_fpay_validacionfacial_lib_ios.URLEncodedFormEncoder.BoolEncoding : Swift.Hashable {}
+extension zy_fpay_validacionfacial_lib_ios.URLEncodedFormEncoder.SpaceEncoding : Swift.Equatable {}
+extension zy_fpay_validacionfacial_lib_ios.URLEncodedFormEncoder.SpaceEncoding : Swift.Hashable {}
+extension zy_fpay_validacionfacial_lib_ios.ZyLibError.CodingKeys : Swift.Equatable {}
+extension zy_fpay_validacionfacial_lib_ios.ZyLibError.CodingKeys : Swift.Hashable {}
+extension zy_fpay_validacionfacial_lib_ios.ZyLibError.CodingKeys : Swift.RawRepresentable {}
+extension zy_fpay_validacionfacial_lib_ios.ZyCrossResponse.CodingKeys : Swift.Equatable {}
+extension zy_fpay_validacionfacial_lib_ios.ZyCrossResponse.CodingKeys : Swift.Hashable {}
+extension zy_fpay_validacionfacial_lib_ios.ZyCrossResponse.CodingKeys : Swift.RawRepresentable {}
+extension zy_fpay_validacionfacial_lib_ios.BfResponseDto.CodingKeys : Swift.Equatable {}
+extension zy_fpay_validacionfacial_lib_ios.BfResponseDto.CodingKeys : Swift.Hashable {}
+extension zy_fpay_validacionfacial_lib_ios.BfResponseDto.CodingKeys : Swift.RawRepresentable {}
+extension zy_fpay_validacionfacial_lib_ios.AddressReniec.CodingKeys : Swift.Equatable {}
+extension zy_fpay_validacionfacial_lib_ios.AddressReniec.CodingKeys : Swift.Hashable {}
+extension zy_fpay_validacionfacial_lib_ios.AddressReniec.CodingKeys : Swift.RawRepresentable {}
+extension zy_fpay_validacionfacial_lib_ios.FacialImageSearch.CodingKeys : Swift.Equatable {}
+extension zy_fpay_validacionfacial_lib_ios.FacialImageSearch.CodingKeys : Swift.Hashable {}
+extension zy_fpay_validacionfacial_lib_ios.FacialImageSearch.CodingKeys : Swift.RawRepresentable {}
+extension zy_fpay_validacionfacial_lib_ios.OcrDto.CodingKeys : Swift.Equatable {}
+extension zy_fpay_validacionfacial_lib_ios.OcrDto.CodingKeys : Swift.Hashable {}
+extension zy_fpay_validacionfacial_lib_ios.OcrDto.CodingKeys : Swift.RawRepresentable {}
+extension zy_fpay_validacionfacial_lib_ios.RsValidacionDoc.CodingKeys : Swift.Equatable {}
+extension zy_fpay_validacionfacial_lib_ios.RsValidacionDoc.CodingKeys : Swift.Hashable {}
+extension zy_fpay_validacionfacial_lib_ios.RsValidacionDoc.CodingKeys : Swift.RawRepresentable {}
+extension zy_fpay_validacionfacial_lib_ios.RsOcr.CodingKeys : Swift.Equatable {}
+extension zy_fpay_validacionfacial_lib_ios.RsOcr.CodingKeys : Swift.Hashable {}
+extension zy_fpay_validacionfacial_lib_ios.RsOcr.CodingKeys : Swift.RawRepresentable {}
+extension zy_fpay_validacionfacial_lib_ios.RsOcrResultado.CodingKeys : Swift.Equatable {}
+extension zy_fpay_validacionfacial_lib_ios.RsOcrResultado.CodingKeys : Swift.Hashable {}
+extension zy_fpay_validacionfacial_lib_ios.RsOcrResultado.CodingKeys : Swift.RawRepresentable {}
+extension zy_fpay_validacionfacial_lib_ios.RsEvaluacionEdad.CodingKeys : Swift.Equatable {}
+extension zy_fpay_validacionfacial_lib_ios.RsEvaluacionEdad.CodingKeys : Swift.Hashable {}
+extension zy_fpay_validacionfacial_lib_ios.RsEvaluacionEdad.CodingKeys : Swift.RawRepresentable {}
+extension zy_fpay_validacionfacial_lib_ios.RsOcrSelfie.CodingKeys : Swift.Equatable {}
+extension zy_fpay_validacionfacial_lib_ios.RsOcrSelfie.CodingKeys : Swift.Hashable {}
+extension zy_fpay_validacionfacial_lib_ios.RsOcrSelfie.CodingKeys : Swift.RawRepresentable {}
+extension zy_fpay_validacionfacial_lib_ios.RsValidacionDatos.CodingKeys : Swift.Equatable {}
+extension zy_fpay_validacionfacial_lib_ios.RsValidacionDatos.CodingKeys : Swift.Hashable {}
+extension zy_fpay_validacionfacial_lib_ios.RsValidacionDatos.CodingKeys : Swift.RawRepresentable {}
+extension zy_fpay_validacionfacial_lib_ios.ZyTipoOperacion : Swift.Equatable {}
+extension zy_fpay_validacionfacial_lib_ios.ZyTipoOperacion : Swift.Hashable {}
+extension zy_fpay_validacionfacial_lib_ios.ZyTipoOperacion : Swift.RawRepresentable {}
+extension zy_fpay_validacionfacial_lib_ios.ZyErrorUi : Swift.Equatable {}
+extension zy_fpay_validacionfacial_lib_ios.ZyErrorUi : Swift.Hashable {}
+extension zy_fpay_validacionfacial_lib_ios.ZyErrorUi : Swift.RawRepresentable {}
