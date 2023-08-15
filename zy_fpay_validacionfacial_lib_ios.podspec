@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
 
     s.name         = "zy_fpay_validacionfacial_lib_ios"
-    s.version      = "0.14.6.5"
+    s.version      = "0.14.6.6"
     s.summary      = "A brief description of zy_fpay_validacionfacial_lib_ios project."
     s.description  = <<-DESC
     An extended description of zy_fpay_validacionfacial_lib_ios project.
@@ -21,7 +21,7 @@ Pod::Spec.new do |s|
     s.source = { :git => "https://github.com/ZYTRUST/zy_fpay_validacionfacial_lib_ios.git", :tag => s.version.to_s }
     s.public_header_files = "zy_fpay_validacionfacial_lib_ios.framework/Headers/*.h"
     s.source_files = "zy_fpay_validacionfacial_lib_ios.framework/Headers/*.h"
-    s.vendored_frameworks = "zy_fpay_validacionfacial_lib_ios.framework"
+    s.vendored_frameworks = "zy_fpay_validacionfacial_lib_ios.xcframework"
     s.platform = :ios
     #s.swift_version = "4.2"
     s.ios.deployment_target  = '12.0'

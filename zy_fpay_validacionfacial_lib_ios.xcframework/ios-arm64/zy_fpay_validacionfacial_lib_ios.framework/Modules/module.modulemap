@@ -1,0 +1,11 @@
+framework module zy_fpay_validacionfacial_lib_ios {
+  umbrella header "zy_fpay_validacionfacial_lib_ios-umbrella.h"
+
+  export *
+  module * { export * }
+}
+
+module zy_fpay_validacionfacial_lib_ios.Swift {
+  header "zy_fpay_validacionfacial_lib_ios-Swift.h"
+  requires objc
+}
